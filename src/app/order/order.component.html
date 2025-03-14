@@ -1,0 +1,59 @@
+<div class="order-container">
+  <h2>Quản lý đơn hàng</h2>
+
+  <!-- Bộ lọc -->
+  <div class="filter-container">
+    <button (click)="toggleFilterPopup()">Lọc theo tình trạng</button>
+    <button (click)="clearFilters()">❌ Hủy lọc</button>
+  </div>
+
+  <!-- Popup chọn trạng thái -->
+  <div class="filter-popup" *ngIf="showFilterPopup">
+    <h3>Chọn tình trạng đơn hàng</h3>
+    <div class="status-options">
+      <button 
+        *ngFor="let status of allStatuses" 
+        (click)="toggleStatus(status)"
+        [class.active]="selectedStatuses.includes(status)">
+        {{ status }}
+      </button>
+    </div>
+    <p>*Có thể chọn nhiều trạng thái</p>
+    <button class="apply-button" (click)="applyFilter()">Áp dụng</button>
+  </div>
+
+  <!-- Bảng danh sách đơn hàng -->
+  <table>
+    <thead>
+      <tr>
+        <th>Mã</th>
+        <th>Tên khách hàng</th>
+        <th>Địa chỉ</th>
+        <th>Ngày đặt</th>
+        <th>Loại thanh toán</th>
+        <th>Tình trạng</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let order of paginatedOrders">
+        <td>{{ order.id }}</td>
+        <td>{{ order.name }}</td>
+        <td>{{ order.address }}</td>
+        <td>{{ order.date }}</td>
+        <td>{{ order.payment }}</td>
+        <td>
+          <span class="status-box" [ngClass]="getStatusClass(order.status)">
+            {{ order.status }}
+          </span>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- Phân trang -->
+  <div class="pagination">
+    <button (click)="changePage(currentPage - 1)" [disabled]="currentPage === 1">❮</button>
+    <span>Trang {{ currentPage }} / {{ totalPages }}</span>
+    <button (click)="changePage(currentPage + 1)" [disabled]="currentPage === totalPages">❯</button>
+  </div>
+</div>

@@ -1,0 +1,65 @@
+<div class="popup">
+    <h2>{{ product.id ? 'Chỉnh sửa' : 'Thêm' }} sản phẩm</h2>
+  
+    <div class="image-upload">
+      <div class="image-placeholder">+</div>
+      <span>Thêm ảnh</span>
+    </div>
+  
+    <div class="form-group">
+      <div class="input-group">
+        <label for="name">Tên sản phẩm</label>
+        <input id="name" [(ngModel)]="product.name" type="text" placeholder="Nhập tên sản phẩm">
+      </div>
+      <div class="input-group">
+        <label for="code">Mã sản phẩm</label>
+        <input id="code" [(ngModel)]="product.code" type="text" placeholder="Nhập mã sản phẩm">
+      </div>
+    </div>
+  
+    <div class="form-group">
+      <div class="input-group">
+        <label for="price">Giá</label>
+        <input id="price" [(ngModel)]="product.price" type="number" placeholder="Nhập giá sản phẩm">
+      </div>
+      <div class="input-group">
+        <label for="quantity">Số lượng</label>
+        <input id="quantity" [(ngModel)]="product.quantity" type="number" placeholder="Nhập số lượng">
+      </div>
+    </div>
+  
+    <div class="form-group">
+      <div class="input-group full-width">
+        <label for="description">Mô tả</label>
+        <textarea id="description" [(ngModel)]="product.description" placeholder="Nhập mô tả sản phẩm"></textarea>
+      </div>
+    </div>
+  
+    <div class="form-group">
+      <div class="input-group">
+        <label for="category">Phân loại</label>
+        <select id="category" [(ngModel)]="product.category">
+          <option value="loai1">Loại 1</option>
+          <option value="loai2">Loại 2</option>
+          <option value="loai3">Loại 3</option>
+        </select>
+      </div>
+    </div>
+  
+    <div class="button-group">
+      <button class="save-btn" (click)="saveProduct()">Thêm</button>
+      <button class="cancel-btn" (click)="close.emit()">Hủy thêm</button>
+    </div>
+  </div>
+  
+  <!-- Popup cảnh báo khi thiếu thông tin -->
+  <div class="confirm-popup" *ngIf="isConfirmPopupVisible">
+    <div class="popup-content">
+      <p>Bạn chưa điền đủ thông tin. Hủy thao tác để trở về danh sách sản phẩm hoặc tiếp tục điền?</p>
+      <div class="popup-buttons">
+        <button class="cancel-btn" (click)="cancelAction()">Hủy thao tác</button>
+        <button class="continue-btn" (click)="continueAction()">Tiếp tục điền</button>
+      </div>
+    </div>
+  </div>
+  

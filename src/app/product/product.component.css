@@ -1,0 +1,118 @@
+.product-container {
+    width: 100%;
+    padding: 20px;
+    background: #f8f9fa;
+    border-radius: 10px;
+}
+
+.header-container {
+    display: flex;
+    gap: 12px;
+    align-items: center; /* CÄƒn giá»¯a theo chiá»u dá»c */
+    margin-bottom: 15px; /* Khoáº£ng cÃ¡ch vá»›i báº£ng bÃªn dÆ°á»›i */
+}
+
+.add-button {
+    background-color: #2d4b21; /* MÃ u xanh lÃ¡ Ä‘áº­m nhÆ° hÃ¬nh */
+    color: white;
+    padding: 10px 20px;
+    border-radius: 20px;
+    border: none;
+    font-size: 16px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.add-button:hover {
+    background-color: #213819;
+}
+
+.search-bar {
+    display: flex;
+    align-items: center;
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 20px;
+    padding: 5px 10px;
+}
+
+.search-bar input {
+    border: none;
+    outline: none;
+    font-size: 14px;
+    padding: 5px;
+    width: 200px;
+}
+
+
+/* Báº¢NG HIá»‚N THá»Š Sáº¢N PHáº¨M */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+th, td {
+    padding: 12px;
+    border-bottom: 1px solid #ddd;
+    text-align: center;
+    font-size: 14px;
+}
+
+th {
+    background-color: #f1f1f1;
+    font-weight: bold;
+}
+
+tr:hover {
+    background-color: #f8f9fa;
+}
+
+/* NÃšT Báº¤M */
+.action-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
+
+.action-buttons button {
+    padding: 8px 12px;
+    border: 1px solid #063B06;
+    border-radius: 5px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.3s;
+    font-size: 14px;
+}
+
+.action-buttons .edit {
+    background-color: #CCE5FF;
+    color: #004085;
+}
+
+.action-buttons .delete {
+    background-color: #F8D7DA;
+    color: #721C24;
+}
+
+.action-buttons button:hover {
+    opacity: 0.8;
+}
+
+
+
+/* POPUP THÃŠM Sáº¢N PHáº¨M */
+.popup {
+    position: fixed;
+    background: white;
+    padding: 20px;
+    box-shadow: 0px 0px 10px gray;
+    top: 30%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border-radius: 10px;
+    z-index: 100;
+}

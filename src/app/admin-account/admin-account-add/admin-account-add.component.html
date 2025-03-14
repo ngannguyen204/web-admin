@@ -1,0 +1,41 @@
+<div class="form-container">
+    <h2>Thêm thông tin Admin mới</h2>
+    
+    <!-- Hiển thị thông báo lỗi nếu có -->
+    <p class="error-message" *ngIf="errorMessage">{{ errorMessage }}</p>
+
+    <div class="form-group">
+        <div class="form-row">
+            <div class="form-field">
+                <label>Tên đăng nhập</label>
+                <input type="text" [(ngModel)]="newAccount.username">
+            </div>
+            <div class="form-field">
+                <label>Mã nhân viên</label>
+                <input type="text" [(ngModel)]="newAccount.employeeId">
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="form-field">
+                <label>Email</label>
+                <input type="text" [(ngModel)]="newAccount.email">
+            </div>
+            <div class="form-field">
+                <label>Số điện thoại</label>
+                <input type="text" [(ngModel)]="newAccount.phone">
+            </div>
+        </div>
+
+        <div class="form-button">
+            <button class="cancel-button" (click)="cancel()">Hủy</button>
+            <button class="submit-button" (click)="save()">Thêm ngay</button>
+        </div>
+    </div>
+</div>
+<div class="popup-overlay" *ngIf="showPopup">
+    <div class="popup">
+        <p>{{ popupMessage }}</p>
+        <button (click)="closePopup()">Đóng</button>
+    </div>
+</div>

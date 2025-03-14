@@ -1,0 +1,37 @@
+[
+    {
+      "label": "Dashboard",
+      "icon": "grid",
+      "route": "/dashboard"
+    },
+    {
+      "label": "Sản phẩm",
+      "icon": "box",
+      "route": "/products"
+    },
+    {
+      "label": "Chương trình giảm giá",
+      "icon": "calendar",
+      "route": "/discounts",
+      "notification": true
+    },
+    {
+      "label": "Đơn hàng",
+      "icon": "clipboard",
+      "route": "/orders"
+    },
+    {
+      "divider": true
+    },
+    {
+      "label": "Quản lý tài khoản",
+      "icon": "settings",
+      "route": "/account"
+    },
+    {
+      "label": "Blog",
+      "icon": "info",
+      "route": "/blog"
+    }
+  ]
+  

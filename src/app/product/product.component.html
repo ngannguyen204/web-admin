@@ -1,0 +1,61 @@
+<!-- Danh sách sản phẩm (Bị ẩn khi form xuất hiện) -->
+<div class="product-container" *ngIf="!isAdding">
+    <h1>Quản lý sản phẩm</h1>
+
+    <!-- Thanh tìm kiếm & Nút thêm sản phẩm -->
+    <div class="header-container">
+        <button class="add-button" (click)="showAddForm()">➕ Thêm sản phẩm</button>
+        <div class="search-bar">
+            <input 
+              type="text" 
+              [(ngModel)]="searchText" 
+              (input)="searchProducts()" 
+              placeholder="🔍 Tìm kiếm sản phẩm..."
+            >
+        </div>
+    </div>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Mã</th>
+          <th>Tên</th>
+          <th>Giá</th>
+          <th>Số lượng</th>
+          <th>Phân loại</th>
+          <th>Thao tác</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let product of filteredProducts">
+          <td>#{{ product.id }}</td>
+          <td>{{ product.name }}</td>
+          <td>{{ product.price | currency:'VND' }}</td>
+          <td>{{ product.quantity }}</td>
+          <td>{{ product.category }}</td>
+          <td>
+            <button (click)="editProduct(product)">✏️</button>
+            <button (click)="confirmDelete(product)">🗑️</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+</div>
+
+<!-- Form thêm sản phẩm (Hiển thị khi bấm "Thêm sản phẩm") -->
+<!-- Form thêm sản phẩm (Hiển thị khi bấm "Thêm sản phẩm") -->
+<app-product-add  
+     *ngIf="isAdding" 
+     [product]="selectedProduct" 
+     (save)="addProduct($event)" 
+     (close)="hideForm()">
+</app-product-add>
+
+    <!-- Popup xác nhận xóa -->
+    <div *ngIf="showConfirmDelete" class="popup">
+      <p>Bạn có chắc chắn muốn xóa sản phẩm "{{ selectedProduct.name }}" không?</p>
+      <button (click)="deleteProduct()">✅ Xác nhận</button>
+      <button (click)="hideDeletePopup()">❌ Hủy</button>
+    </div>
+ 
+  

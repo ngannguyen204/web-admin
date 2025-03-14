@@ -1,0 +1,56 @@
+aside {
+  width: 250px;
+  background: #F8F9FA;
+  padding: 20px;
+  transition: width 0.3s ease-in-out;
+}
+
+.sidebar-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.toggle-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 18px;
+}
+
+.menu button {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 16px;
+  color: #6C757D;
+  background: none;
+  border: none;
+  padding: 10px;
+  width: 100%;
+  text-align: left;
+  cursor: pointer;
+  transition: color 0.3s;
+}
+
+.menu button.active {
+  color: #1E1E1E;
+  font-weight: bold;
+}
+
+.menu button .dot {
+  width: 6px;
+  height: 6px;
+  background: #FF7F00;
+  border-radius: 50%;
+  margin-left: 5px;
+}
+
+/* Sidebar collapsed */
+aside.collapsed {
+  width: 80px;
+}
+
+.collapsed .menu button span {
+  display: none;
+}

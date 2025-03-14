@@ -1,0 +1,167 @@
+.promotion-container {
+    width: 100%;
+    padding: 20px;
+    background: #f8f9fa;
+    border-radius: 10px;
+}
+
+/* TIÊU ĐỀ VÀ HÀNH ĐỘNG */
+.promotion-header {
+    margin-bottom: 15px;
+}
+
+/* Thanh chứa nút "Thêm" và ô tìm kiếm */
+.header-container {
+    display:flex;
+    justify-content: space-between;
+    align-items:start;
+    margin-bottom: 15px;
+    gap: 12px;
+}
+
+/* BUTTON THÊM KHUYẾN MÃI */
+.add-button {
+    background-color: #2d4b21; /* Xanh lá đậm */
+    color: white;
+    padding: 10px 20px;
+    border-radius: 20px;
+    border: none;
+    font-size: 16px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background 0.3s ease-in-out;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-grow: 0.5; /* Cùng kích thước với ô tìm kiếm */
+}
+
+.add-button:hover {
+    background-color: #213819;
+}
+
+/* THANH TÌM KIẾM */
+.search-bar {
+    display: flex;
+    align-items: center;
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 20px;
+    padding: 5px 10px;
+    flex-grow: 0.5; /* Cùng kích thước với nút Thêm */
+}
+
+/* Ô INPUT BÊN TRONG */
+.search-bar input {
+    border: none;
+    outline: none;
+    font-size: 14px;
+    padding: 5px;
+    width: 100%;
+}
+
+/* BẢNG HIỂN THỊ KHUYẾN MÃI */
+.promotion-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.promotion-table th, .promotion-table td {
+    padding: 12px;
+    border-bottom: 1px solid #ddd;
+    text-align: center;
+    font-size: 14px;
+}
+
+.promotion-table th {
+    background-color: #f1f1f1;
+    font-weight: bold;
+}
+
+.promotion-table tr:hover {
+    background-color: #f8f9fa;
+}
+
+/* NÚT HÀNH ĐỘNG */
+.action-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
+
+.action-buttons button {
+    padding: 8px 12px;
+    border-radius: 5px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.3s;
+    font-size: 14px;
+}
+
+/* Nút Edit */
+.action-buttons .edit {
+    background-color: #CCE5FF;
+    color: #004085;
+    border: 1px solid #004085;
+}
+
+.action-buttons .edit:hover {
+    background-color: #B0D4F1;
+}
+
+/* Nút Delete */
+.action-buttons .delete {
+    background-color: #F8D7DA;
+    color: #721C24;
+    border: 1px solid #721C24;
+}
+
+.action-buttons .delete:hover {
+    background-color: #E4B5B8;
+}
+
+/* PHÂN TRANG */
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 15px;
+}
+
+.pagination button {
+    background-color: #063B06;
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 5px;
+    margin: 0 5px;
+    cursor: pointer;
+    transition: background 0.3s ease-in-out;
+}
+
+.pagination button:hover {
+    background-color: #052B05;
+}
+
+.pagination button:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
+
+/* POPUP THÊM KHUYẾN MÃI */
+.promotion-popup {
+    position: fixed;
+    background: white;
+    padding: 20px;
+    box-shadow: 0px 0px 10px gray;
+    top: 30%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border-radius: 10px;
+    z-index: 100;
+}

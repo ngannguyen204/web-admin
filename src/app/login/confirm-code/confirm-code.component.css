@@ -1,0 +1,133 @@
+/* Bố cục chính */
+.confirm-code-container {
+    display: flex;
+    height: 100vh;
+  }
+  
+  /* Phần logo bên trái */
+  .logo-section {
+    flex: 1;
+    background-color: #063B06;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .logo {
+    max-width: 60%;
+    height: auto;
+    object-fit: contain;
+  }
+  
+  /* Phần form bên phải */
+  .form-section {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+  }
+  
+  form {
+    width: 100%;
+    max-width: 380px;
+    background: #fff;
+    padding: 24px;
+    border-radius: 8px;
+    
+  }
+  
+  /* Tiêu đề */
+  .title {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 8px;
+  }
+  
+  .subtitle {
+    font-size: 14px;
+    color: #666;
+    margin-bottom: 16px;
+  }
+  
+  /* Ô nhập liệu */
+  .input-group {
+    margin-bottom: 16px;
+  }
+  
+  .input-group label {
+    display: block;
+    font-size: 14px;
+    font-weight: 500;
+    margin-bottom: 4px;
+  }
+  
+  /* Input style */
+  .input-group input {
+    width: 100%;
+    padding: 12px;
+    font-size: 16px;
+    border: none; /* Không có viền */
+    border-bottom: 1px solid #ccc; /* Chỉ có viền dưới */
+    outline: none;
+    background: transparent;
+  }
+  
+  .input-group input:focus {
+    border-bottom: 1px solid #000; /* Khi focus, đường viền đậm hơn */
+  }
+  
+  /* Mật khẩu có nút hiển thị */
+  .password-wrapper {
+    display: flex;
+    align-items: center;
+    position: relative;
+  }
+  
+  .password-wrapper input {
+    flex: 1;
+  }
+  
+  /* Icon con mắt */
+  .toggle-password {
+    position: absolute;
+    right: 10px;
+    cursor: pointer;
+    color: #063B06;
+  }
+  
+  .toggle-password i {
+    font-size: 16px; /* Giảm kích thước icon */
+  }
+  
+  /* Tùy chọn checkbox */
+  .options {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 14px;
+    margin-bottom: 16px;
+  }
+  
+  .forgot-password {
+    text-decoration: none;
+    color: #063B06;
+    font-weight: 500;
+  }
+  
+  /* Nút xác nhận */
+  .confirm-button {
+    width: 100%;
+    background-color: #063B06;
+    color: white;
+    padding: 12px;
+    font-size: 16px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  .confirm-button:hover {
+    background-color: #052A04;
+  }
+  

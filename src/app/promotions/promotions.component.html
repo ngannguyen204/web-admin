@@ -1,0 +1,54 @@
+<div class="promotion-container">
+    <!-- Tiêu đề quản lý chương trình giảm giá -->
+    <h2>Quản lý chương trình giảm giá</h2>
+    
+    <!-- Thanh tìm kiếm & Nút thêm chương trình -->
+    <div class="header-container">
+        <button class="add-button" (click)="showAddPromotionForm()">➕ Thêm</button>
+        <div class="search-bar">
+            <input 
+              type="text" 
+              [(ngModel)]="searchText" 
+              (input)="searchPromotions()" 
+              placeholder="🔍 Tìm kiếm chương trình..."
+            >
+        </div>
+    </div>
+
+    <table class="promotion-table">
+        <thead>
+            <tr>
+                <th>Mã</th>
+                <th>Code</th>
+                <th>Chi tiết</th>
+                <th>Bắt đầu</th>
+                <th>Kết thúc</th>
+                <th>Tình trạng</th>
+                <th>% Giảm</th>
+                <th>Giá trị tối thiểu</th>
+                <th>Thao tác</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let promo of filteredPromotions()">
+                <td>{{ promo.id }}</td>
+                <td>{{ promo.code }}</td>
+                <td>{{ promo.detail }}</td>
+                <td>{{ promo.start }}</td>
+                <td>{{ promo.end }}</td>
+                <td>{{ promo.status }}</td>
+                <td>{{ promo.discount }}%</td>
+                <td>{{ promo.minValue | number }}</td>
+                <td>
+                    <button class="delete-btn" (click)="deletePromotion(promo.id)">Xóa</button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="pagination">
+        <button (click)="prevPage()" [disabled]="currentPage === 1">‹</button>
+        <span>Trang {{ currentPage }} / {{ totalPages }}</span>
+        <button (click)="nextPage()" [disabled]="currentPage >= totalPages">›</button>
+    </div>
+</div>

@@ -1,0 +1,93 @@
+.blog-container {
+    text-align: center;
+  }
+  
+  /* Banner */
+  .blog-banner img {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+  
+  /* Nút "Tất cả blog" */
+  .blog-controls {
+    margin: 20px 0;
+  }
+  
+  .blog-controls button {
+    padding: 10px 20px;
+    background-color: #063B06;
+    color: white;
+    border: none;
+    cursor: pointer;
+    transition: 0.3s;
+  }
+  
+  .blog-controls button:hover {
+    background-color: #042704;
+  }
+  
+  /* Grid hiển thị blog */
+  .blog-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    margin-top: 20px;
+  }
+  
+  .blog-item {
+    cursor: pointer;
+    transition: 0.3s;
+  }
+  
+  .blog-item img {
+    width: 100%;
+    height: auto;
+    border-radius: 8px;
+  }
+  
+  .blog-item:hover {
+    transform: scale(1.05);
+  }
+  
+  /* Phân trang */
+  .pagination {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+  }
+  
+  .pagination button {
+    background: none;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+    margin: 0 10px;
+  }
+  
+  .pagination button:disabled {
+    color: grey;
+    cursor: not-allowed;
+  }
+  
+  /* Nút "Thêm Blog" nằm dưới cùng */
+  .add-blog-btn {
+    margin-top: 40px;
+    text-align: center;
+  }
+  
+  .add-blog-btn button {
+    padding: 12px 25px;
+    background-color: #063B06;
+    color: white;
+    border: none;
+    cursor: pointer;
+    transition: 0.3s;
+    font-size: 16px;
+    border-radius: 5px;
+  }
+  
+  .add-blog-btn button:hover {
+    background-color: #042704;
+  }
+  

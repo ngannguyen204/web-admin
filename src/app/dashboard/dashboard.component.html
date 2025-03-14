@@ -1,0 +1,59 @@
+<div class="dashboard-container">
+  <!-- Thống kê hôm nay -->
+  <div class="stats">
+    <div class="stat-box">
+      <h3>Lượt truy cập</h3>
+      <p>{{ stats.visits }}</p>
+    </div>
+    <div class="stat-box">
+      <h3>Đơn hàng</h3>
+      <p>{{ stats.orders }}</p>
+    </div>
+    <div class="stat-box">
+      <h3>Doanh thu hôm nay</h3>
+      <p>{{ stats.revenue | currency }}</p>
+    </div>
+  </div>
+
+  <!-- Bộ lọc tháng -->
+  <div class="filter-section">
+    <label for="month">Chọn tháng:</label>
+    <select id="month" (change)="onMonthChange($event)">
+      <option *ngFor="let month of months" [value]="month">
+        Tháng {{ month }}
+      </option>
+    </select>
+  </div>
+
+  <!-- Biểu đồ doanh thu -->
+  <div class="chart-container">
+    <canvas id="salesChart"></canvas>
+  </div>
+
+  <!-- Bảng sản phẩm bán chạy -->
+  <div class="top-products">
+    <h2>Top 10 Sản phẩm có doanh thu cao nhất</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Mã</th>
+          <th>Tên sản phẩm</th>
+          <th>Giá</th>
+          <th>Doanh số</th>
+          <th>Số lượng</th>
+          <th>Phân loại</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let product of topProducts">
+          <td>{{ product.id }}</td>
+          <td>{{ product.name }}</td>
+          <td>{{ product.price | currency }}</td>
+          <td>{{ product.revenue | currency }}</td>
+          <td>{{ product.quantity }}</td>
+          <td>{{ product.category }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

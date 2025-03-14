@@ -1,0 +1,82 @@
+<div *ngIf="!showConfirmDelete" class="admin-container">
+    <h1>Quản lý Tài Khoản</h1>
+
+    <div class="toggle-container">
+        <button [class.active]="isAdminView" (click)="toggleView()">👤 Quản lý Admin</button>
+        <button [class.active]="!isAdminView" (click)="toggleView()">👥 Quản lý User</button>
+    </div>
+
+    <div class="header-container">
+        <button class="add-button" *ngIf="isAdminView" (click)="goToAddAccountPage()">➕ Thêm tài khoản</button>
+        <div class="search-bar">
+            <input type="text" [(ngModel)]="searchText" placeholder="🔍 Tìm kiếm...">
+        </div>
+    </div>
+
+    <table>
+        <thead>
+            <tr *ngIf="isAdminView">
+                <th>Mã NV</th>
+                <th>Tên đăng nhập</th>
+                <th>Email</th>
+                <th>Lần đăng nhập cuối</th>
+                <th>Hành động</th>
+            </tr>
+            <tr *ngIf="!isAdminView">
+                <th>Mã KH</th>
+                <th>Họ tên</th>
+                <th>Email</th>
+                <th>Số điện thoại</th>
+                <th>Điểm tích lũy</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            <!-- Bảng Admin -->
+            <ng-container *ngIf="isAdminView">
+                <tr *ngFor="let admin of getPagedAdmins()">
+                    <td>{{ admin.employeeId }}</td>
+                    <td>
+                        <input *ngIf="admin.isEditing" [(ngModel)]="admin.username">
+                        <span *ngIf="!admin.isEditing">{{ admin.username }}</span>
+                    </td>
+                    <td>
+                        <input *ngIf="admin.isEditing" [(ngModel)]="admin.email">
+                        <span *ngIf="!admin.isEditing">{{ admin.email }}</span>
+                    </td>
+                    <td>{{ admin.lastLogin }}</td>
+                    <td>
+                        <button *ngIf="!admin.isEditing" class="edit" (click)="editAdmin(admin)">✏️</button>
+                        <button *ngIf="admin.isEditing" class="save" (click)="saveAdmin(admin)">💾</button>
+                        <button class="delete" (click)="showDeletePopup(admin)">🗑️</button>
+                    </td>
+                </tr>
+            </ng-container>
+
+            <!-- Bảng User (Xóa cột "Hành động") -->
+            <ng-container *ngIf="!isAdminView">
+                <tr *ngFor="let user of getPagedUsers()">
+                    <td>{{ user.id }}</td>
+                    <td>{{ user.name }}</td>
+                    <td>{{ user.email }}</td>
+                    <td>{{ user.phone }}</td>
+                    <td>{{ user.points }}</td>
+                </tr>
+            </ng-container>
+        </tbody>
+    </table>
+</div>
+
+<!-- Thanh phân trang (Chỉ giữ icon, bỏ chữ "Trước" và "Tiếp") -->
+<div class="pagination-container">
+    <button (click)="prevPage()" [disabled]="currentPage === 1">⬅️</button>
+    <span>Trang {{ currentPage }} / {{ totalPages() }}</span>
+    <button (click)="nextPage()" [disabled]="currentPage === totalPages()">➡️</button>
+</div>
+
+<!-- Popup xác nhận xóa -->
+<div *ngIf="showConfirmDelete" class="popup">
+    <p>Bạn có chắc chắn muốn xóa "{{ selectedItem?.username || selectedItem?.name }}" không?</p>
+    <button (click)="deleteItem()">✅ Xác nhận</button>
+    <button (click)="hideDeletePopup()">❌ Hủy</button>
+</div>

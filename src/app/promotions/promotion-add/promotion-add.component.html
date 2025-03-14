@@ -1,0 +1,39 @@
+<div class="promotion-add-container">
+    <h2>Quản lý chương trình giảm giá</h2>
+    <form (ngSubmit)="addPromotion()">
+        <div class="form-grid">
+            <div class="form-group">
+                <label>Mã chương trình</label>
+                <input type="text" [(ngModel)]="promotion.code" name="code" placeholder="Nhập mã chương trình">
+            </div>
+            <div class="form-group">
+                <label>Code áp dụng giảm giá</label>
+                <input type="text" [(ngModel)]="promotion.applyCode" name="applyCode" placeholder="Nhập code giảm giá">
+            </div>
+            <div class="form-group">
+                <label>Chi tiết</label>
+                <input type="text" [(ngModel)]="promotion.detail" name="detail" placeholder="Nhập chi tiết chương trình">
+            </div>
+            <div class="form-group">
+                <label>Phần trăm giảm giá</label>
+                <input type="number" [(ngModel)]="promotion.discount" name="discount" placeholder="Nhập % giảm giá">
+            </div>
+            <div class="form-group">
+                <label>Ngày bắt đầu</label>
+                <input type="date" [(ngModel)]="promotion.start" name="start">
+            </div>
+            <div class="form-group">
+                <label>Ngày kết thúc</label>
+                <input type="date" [(ngModel)]="promotion.end" name="end">
+            </div>
+            <div class="form-group full-width">
+                <label>Giá trị tối thiểu</label>
+                <input type="number" [(ngModel)]="promotion.minValue" name="minValue" placeholder="Nhập giá trị tối thiểu">
+            </div>
+        </div>
+        <div class="button-group">
+            <button class="add-btn" type="submit">Thêm</button>
+            <button class="close-btn" type="button" (click)="cancelAdd()">Huỷ thêm</button>
+        </div>
+    </form>
+</div>

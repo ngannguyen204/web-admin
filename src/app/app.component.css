@@ -1,0 +1,16 @@
+.container {
+  display: flex;
+}
+
+aside {
+  width: 250px; /* Độ rộng sidebar */
+  min-height: 100vh;
+  background: #f8f9fa;
+  padding-top:0%
+}
+
+main {
+  flex-grow: 1;
+  padding: 20px;
+  background: #fff;
+}

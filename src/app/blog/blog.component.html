@@ -1,0 +1,34 @@
+<div class="blog-container">
+    <!-- Banner -->
+    <div class="blog-banner">
+      <img src="assets/blog-banner.jpg" alt="Blog">
+    </div>
+  
+    <!-- Nút "Tất cả blog" ngay dưới banner -->
+    <div class="blog-controls">
+      <button (click)="toggleAllBlogs()">
+        {{ showAll ? 'Ẩn bớt' : 'Tất cả blog' }}
+      </button>
+    </div>
+  
+    <!-- Danh sách blog -->
+    <div class="blog-grid">
+      <div *ngFor="let blog of paginatedBlogs" class="blog-item" (click)="editBlog(blog.id)">
+        <img [src]="blog.image" alt="Blog Image">
+        <h3>{{ blog.title }}</h3>
+        <p>{{ blog.date }}</p>
+      </div>
+    </div>
+  
+    <!-- Phân trang -->
+    <div class="pagination" *ngIf="showAll">
+      <button (click)="prevPage()" [disabled]="currentPage === 1">←</button>
+      <button (click)="nextPage()" [disabled]="currentPage === Math.ceil(blogs.length / itemsPerPage)">→</button>
+    </div>
+  
+    <!-- Nút "Thêm Blog" nằm dưới cùng -->
+    <div class="add-blog-btn">
+      <button (click)="navigateToAddBlog()">Thêm Blog</button>
+    </div>
+  </div>
+  

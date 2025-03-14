@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-root',
@@ -8,4 +9,11 @@ import { Component } from '@angular/core';
 })
 export class AppComponent {
   title = 'my-app';
+
+  constructor(public router: Router) {}
+
+  // Kiểm tra nếu đang ở trang login thì ẩn header & slide-bar
+  isLoginPage(): boolean {
+    return this.router.url === '/login';
+  }
 }

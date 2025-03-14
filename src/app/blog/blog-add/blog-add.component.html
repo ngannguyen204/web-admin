@@ -1,0 +1,43 @@
+<div class="blog-form">
+  <div class="upload-image">
+    <label for="upload">
+      <img *ngIf="blogImage" [src]="blogImage" class="preview-img">
+      <div *ngIf="!blogImage" class="placeholder">
+        <i class="fas fa-camera"></i> Thêm ảnh bìa
+      </div>
+    </label>
+    <input id="upload" type="file" accept="image/*" (change)="onImageUpload($event)" hidden>
+  </div>
+
+  <input type="text" placeholder="Nhập tiêu đề..." class="title-input" [(ngModel)]="blogTitle">
+
+  <div class="editor-toolbar">
+    <button (click)="formatText('bold')"><i class="fas fa-bold"></i></button>
+    <button (click)="formatText('italic')"><i class="fas fa-italic"></i></button>
+    <button (click)="formatText('underline')"><i class="fas fa-underline"></i></button>
+    <button (click)="insertImage()"><i class="far fa-image"></i></button>
+  </div>
+
+  <quill-editor [(ngModel)]="blogContent" [modules]="editorModules"></quill-editor>
+
+  <p class="timestamp">
+    <i class="fas fa-calendar-alt"></i> Ngày tạo: {{ createdAt | date: 'dd/MM/yyyy HH:mm' }}
+  </p>
+
+  <div class="button-group">
+    <button class="add-btn" (click)="saveBlog()">
+      <i class="fas fa-plus-circle"></i> Thêm
+    </button>
+    <button class="cancel-btn" (click)="cancel()">
+      <i class="fas fa-times-circle"></i> Hủy thêm
+    </button>
+  </div>
+</div>
+
+<!-- Pop-up cảnh báo -->
+<div *ngIf="showPopup" class="popup-overlay">
+  <div class="popup">
+    <p>Vui lòng nhập đầy đủ tiêu đề, nội dung và ảnh bìa!</p>
+    <button (click)="closePopup()">OK</button>
+  </div>
+</div>

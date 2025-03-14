@@ -1,0 +1,84 @@
+.dashboard-container {
+  padding: 20px;
+  font-family: Arial, sans-serif;
+}
+
+.stats {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.stat-box {
+  background: #dde4dd;
+  color: #3f3f3f;
+  padding: 15px;
+  border-radius: 8px;
+  text-align: center;
+  flex: 1;
+  margin: 0 10px;
+}
+
+.stat-box h3 {
+  font-size: 18px;
+  margin-bottom: 5px;
+}
+
+.stat-box p {
+  font-size: 22px;
+  font-weight: bold;
+}
+
+.filter-section {
+  margin-bottom: 20px;
+  text-align: right;
+}
+
+.filter-section label {
+  font-weight: bold;
+  margin-right: 10px;
+}
+
+.filter-section select {
+  padding: 5px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+}
+
+.chart-container {
+  background: #fff;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+}
+
+.top-products {
+  margin-top: 20px;
+}
+
+.top-products h2 {
+  font-size: 20px;
+  margin-bottom: 10px;
+}
+
+.top-products table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.top-products th, .top-products td {
+  padding: 10px;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+}
+
+.top-products th {
+  background: #063B06;
+  color: #fff;
+}
+
+.top-products tbody tr:hover {
+  background: rgba(6, 59, 6, 0.1);
+}
+

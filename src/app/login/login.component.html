@@ -1,0 +1,46 @@
+<div class="login-container">
+    <!-- Phần logo bên trái -->
+    <div class="logo-section">
+      <img src="asset/image/logo.png" class="logo" />
+    </div>
+  
+    <!-- Phần form đăng nhập bên phải -->
+    <div class="form-section">
+      <form (submit)="onSubmit()">
+        <h2 class="title">Đăng nhập</h2>
+        <p class="subtitle">Vui lòng sử dụng đúng mã nhân viên được cung cấp cho bạn</p>
+  
+        <!-- Ô nhập tên đăng nhập -->
+        <div class="input-group">
+          <label for="username">Tên đăng nhập</label>
+          <input type="text" id="username" [(ngModel)]="username" name="username" required />
+        </div>
+  
+        <!-- Ô nhập mật khẩu -->
+        <div class="input-group">
+          <label for="password">Mật khẩu</label>
+          <div class="password-wrapper">
+            <input [type]="passwordFieldType" id="password" [(ngModel)]="password" name="password" required />
+            <span class="toggle-password" (click)="togglePassword()">
+              <i class="material-icons">
+                {{ passwordFieldType === 'password' ? 'visibility' : 'visibility_off' }}
+              </i>
+            </span>              
+          </div>
+        </div>
+  
+        <!-- Ghi nhớ tài khoản & Quên mật khẩu -->
+        <div class="options">
+          <label>
+            <input type="checkbox" [(ngModel)]="rememberMe" name="rememberMe" />
+            Lưu tài khoản
+          </label>
+          <a routerLink="/forgot-password" class="forgot-password">Quên mật khẩu?</a>
+        </div>
+  
+        <!-- Nút đăng nhập -->
+        <button type="submit" class="login-button">Đăng nhập</button>
+      </form>
+    </div>
+  </div>
+  
