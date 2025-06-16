@@ -101,7 +101,7 @@ export class AdminAccountComponent implements OnInit {
       return []; // Trả về mảng rỗng nếu userList không phải là mảng
     }
     return this.userList.filter(user =>
-      user.first_name.toLowerCase().includes(this.searchText.toLowerCase()) ||
+      user.name.toLowerCase().includes(this.searchText.toLowerCase()) ||
       user.email.toLowerCase().includes(this.searchText.toLowerCase())
     );
   }
@@ -149,7 +149,7 @@ export class AdminAccountComponent implements OnInit {
 
   saveAdmin(admin: Admin): void {
     admin.isEditing = false;
-    this.adminAccountService.updateAdmin(admin._id, admin).subscribe(
+    this.adminAccountService.updateAdmin(admin.adminid, admin).subscribe(
       (updatedAdmin: Admin) => {
         console.log('Admin updated:', updatedAdmin);
       },
@@ -164,7 +164,7 @@ export class AdminAccountComponent implements OnInit {
       if (this.isAdminView) {
         this.adminAccountService.deleteAdmin(this.selectedItem._id).subscribe(
           () => {
-            this.adminList = this.adminList.filter(admin => admin._id !== this.selectedItem._id);
+            this.adminList = this.adminList.filter(admin => admin.adminid !== this.selectedItem._id);
             this.hideDeletePopup();
           },
           (error) => {

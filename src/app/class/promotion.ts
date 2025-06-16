@@ -1,25 +1,24 @@
 export class Promotion {
-    _id: string = '';
-    promotion_code: string = '';
-    promotion_status: string = '';
-    start_date: Date = new Date();
-    end_date: Date = new Date();
-    min_order_value: number = 0;
-    discount_percent: number = 0;
-    promotion_title: string = '';
+  promotionid: string = '';
+  promotioncode: string = '';
+  discounttype: string = ''; // e.g., 'percentage' or 'fixed'
+  discountvalue: number = 0;
+  category: string = '';
+  userid: string = '';
+  isused: boolean = false;
+  validfrom: Date = new Date();
+  validuntil: Date = new Date();
 
-    constructor(init?: Partial<Promotion>) {
-        if (init) {
-            // Chuyển đổi chuỗi start_date và end_date thành đối tượng Date nếu cần
-            if (init.start_date) {
-                this.start_date = typeof init.start_date === 'string' ? new Date(init.start_date) : init.start_date;
-            }
-            if (init.end_date) {
-                this.end_date = typeof init.end_date === 'string' ? new Date(init.end_date) : init.end_date;
-            }
+  constructor(init?: Partial<Promotion>) {
+    if (init) {
+      if (init.validfrom) {
+        this.validfrom = typeof init.validfrom === 'string' ? new Date(init.validfrom) : init.validfrom;
+      }
+      if (init.validuntil) {
+        this.validuntil = typeof init.validuntil === 'string' ? new Date(init.validuntil) : init.validuntil;
+      }
 
-            // Gán các giá trị khác từ init vào đối tượng hiện tại
-            Object.assign(this, init);
-        }
+      Object.assign(this, init);
     }
+  }
 }

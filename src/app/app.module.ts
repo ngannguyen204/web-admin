@@ -2,18 +2,13 @@ import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
+
 import { AdminHeaderComponent } from './admin-header/admin-header.component';
 import { SlideBarComponent } from './slide-bar/slide-bar.component';
-import { FormsModule } from '@angular/forms';
 import { DashboardComponent } from './dashboard/dashboard.component';
-import { HttpClientModule } from '@angular/common/http';
-import { CommonModule } from '@angular/common';
 import { PromotionsComponent } from './promotions/promotions.component';
 import { PromotionAddComponent } from './promotions/promotion-add/promotion-add.component';
 import { OrderComponent } from './order/order.component';
-import { BlogComponent } from './blog/blog.component';
-import { BlogAddComponent } from './blog/blog-add/blog-add.component';
-import { QuillModule } from 'ngx-quill';
 import { ProductComponent } from './product/product.component';
 import { ProductAddComponent } from './product/product-add/product-add.component';
 import { AdminAccountComponent } from './admin-account/admin-account.component';
@@ -23,20 +18,49 @@ import { ForgotPasswordComponent } from './login/forgot-password/forgot-password
 import { ConfirmCodeComponent } from './login/confirm-code/confirm-code.component';
 import { ResetPasswordComponent } from './login/reset-password/reset-password.component';
 
+import { FormsModule } from '@angular/forms';
+import { HttpClientModule } from '@angular/common/http';
+import { CommonModule } from '@angular/common';
+import { QuillModule } from 'ngx-quill';
+
+
+import { AngularFireModule } from '@angular/fire/compat';
+import { AngularFireDatabaseModule } from '@angular/fire/compat/database';
+import { AngularFireAnalyticsModule } from '@angular/fire/compat/analytics';
+
+import { firebaseConfig } from './firebase.config';
+
 @NgModule({
-  declarations: [ // Nơi khai báo các component
-    AppComponent,PromotionsComponent,PromotionAddComponent,DashboardComponent, OrderComponent, BlogComponent, BlogAddComponent, ProductComponent, ProductAddComponent, AdminAccountComponent, AdminAccountAddComponent, LoginComponent, ForgotPasswordComponent, ConfirmCodeComponent, ResetPasswordComponent, SlideBarComponent,AdminHeaderComponent, 
+  declarations: [
+    AppComponent,
+    PromotionsComponent,
+    PromotionAddComponent,
+    DashboardComponent,
+    OrderComponent,
+    ProductComponent,
+    ProductAddComponent,
+    AdminAccountComponent,
+    AdminAccountAddComponent,
+    LoginComponent,
+    ForgotPasswordComponent,
+    ConfirmCodeComponent,
+    ResetPasswordComponent,
+    SlideBarComponent,
+    AdminHeaderComponent,
   ],
-  imports: [ // Chỉ để module ở đây
+  imports: [
     BrowserModule,
     AppRoutingModule,
     FormsModule,
     HttpClientModule,
     CommonModule,
-    QuillModule.forRoot()
-    
+    QuillModule.forRoot(),
+
+    AngularFireModule.initializeApp(firebaseConfig),
+    AngularFireDatabaseModule,
+    AngularFireAnalyticsModule
   ],
   providers: [],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
 })
 export class AppModule {}
