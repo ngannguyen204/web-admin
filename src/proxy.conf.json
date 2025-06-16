@@ -1,0 +1,86 @@
+[
+    {
+        "context": ["/product", "/product/categories", "/product/category", "/product/top-selling", "/product/latest"],
+        "target": "http://localhost:8688",
+        "secure": true,
+        "changeOrigin": true,
+        "logLevel": "debug"
+    },
+    {
+        "context": ["/blog"],
+        "target": "http://localhost:8688",
+        "secure": true,
+        "changeOrigin": true,
+        "logLevel": "debug"
+    },
+    {
+        "context": ["/promotion"],
+        "target": "http://localhost:8688",
+        "secure": true,
+        "changeOrigin": true,
+        "logLevel": "debug"
+    },
+    {
+        "context": ["/cart"],
+        "target": "http://localhost:8688",
+        "secure": true,
+        "changeOrigin": true,
+        "logLevel": "debug"
+    },
+    {
+        "context": ["/wishlist"],
+        "target": "http://localhost:8688",
+        "secure": true,
+        "changeOrigin": true,
+        "logLevel": "debug"
+    },
+    {
+        "context": ["/order"],
+        "target": "http://localhost:8688",
+        "secure": true,
+        "changeOrigin": true,
+        "logLevel": "debug"
+    },
+    {
+        "context": ["/payment"],
+        "target": "http://localhost:8688",
+        "secure": true,
+        "changeOrigin": true,
+        "logLevel": "debug"
+    },
+    {
+        "context": ["/customer"],
+        "target": "http://localhost:8688",
+        "secure": true,
+        "changeOrigin": true,
+        "logLevel": "debug"
+    },
+    {
+        "context": ["/review"],
+        "target": "http://localhost:8688",
+        "secure": true,
+        "changeOrigin": true,
+        "logLevel": "debug"
+    },
+    {
+        "context": ["/admin"],
+        "target": "http://localhost:8688",
+        "secure": true,
+        "changeOrigin": true,
+        "logLevel": "debug"
+    },
+    {
+        "context": ["/authCustomer"],
+        "target": "http://localhost:8688",
+        "secure": true,
+        "changeOrigin": true,
+        "logLevel": "debug"
+    },
+    {
+        "context": ["/authAdmin"],
+        "target": "http://localhost:8688",
+        "secure": true,
+        "changeOrigin": true,
+        "logLevel": "debug"
+    }
+]

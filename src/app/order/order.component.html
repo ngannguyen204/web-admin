@@ -30,21 +30,19 @@
         <th>Tên khách hàng</th>
         <th>Địa chỉ</th>
         <th>Ngày đặt</th>
-        <th>Loại thanh toán</th>
-        <th>Tình trạng</th>
+      <th>Tình trạng</th>
       </tr>
     </thead>
     <tbody>
       <tr *ngFor="let order of paginatedOrders">
-        <td>{{ order.id }}</td>
-        <td>{{ order.name }}</td>
-        <td>{{ order.address }}</td>
-        <td>{{ order.date }}</td>
-        <td>{{ order.payment }}</td>
+        <td>{{ order._id }}</td>
+        <td>{{ order.customer_id }}</td> <!-- Cần cập nhật để hiển thị tên khách hàng -->
+        <td>{{ order.delivery_address }}</td>
+        <td>{{ order.order_date | date }}</td>
         <td>
-          <span class="status-box" [ngClass]="getStatusClass(order.status)">
-            {{ order.status }}
-          </span>
+          <select [ngClass]="getStatusClass(order.order_status)" [(ngModel)]="order.order_status" (change)="updateOrderStatus(order)">
+            <option *ngFor="let status of getAllowedStatuses(order.order_status)" [value]="status.value">{{ status.label }}</option>
+          </select>
         </td>
       </tr>
     </tbody>

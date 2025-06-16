@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
-
+import { AuthService } from '../../auth.service';
 @Component({
   selector: 'app-reset-password',
   standalone: false,
@@ -8,28 +8,57 @@ import { Router } from '@angular/router';
   styleUrls: ['./reset-password.component.css']
 })
 export class ResetPasswordComponent {
-  username = localStorage.getItem('username') || ''; // Lấy username từ localStorage
+  email = localStorage.getItem('email') || '';
   newPassword: string = '';
   confirmPassword: string = '';
   rememberMe: boolean = false;
   passwordFieldType: string = 'password';
+  showPopup: boolean = false;
+  popupMessage: string = '';
 
-  constructor(private router: Router) {}
+  constructor(private router: Router, private authService: AuthService) {}
 
   togglePassword() {
     this.passwordFieldType = this.passwordFieldType === 'password' ? 'text' : 'password';
   }
 
   onResetPassword() {
-    if (this.newPassword !== this.confirmPassword) {
-      alert('Mật khẩu xác nhận không khớp!');
+    if (!this.newPassword || !this.confirmPassword) {
+      this.showPopupMessage('Vui lòng nhập đủ các trường!');
       return;
     }
 
-    // Giả lập lưu mật khẩu mới
-    console.log('Mật khẩu mới:', this.newPassword);
+    if (this.newPassword !== this.confirmPassword) {
+      this.showPopupMessage('Mật khẩu xác nhận không khớp!');
+      return;
+    }
 
-    // Chuyển về trang đăng nhập sau khi đặt lại mật khẩu thành công
-    this.router.navigate(['/login']);
+    const resetToken = localStorage.getItem('resetToken');
+    if (!resetToken) {
+      this.showPopupMessage('Token không hợp lệ hoặc đã hết hạn!');
+      return;
+    }
+
+    this.authService.resetPassword(resetToken, this.newPassword).subscribe(
+      (response: any) => {
+        console.log('Reset mật khẩu thành công!', response);
+        this.showPopupMessage('Reset mật khẩu thành công!');
+        localStorage.removeItem('resetToken');
+        this.router.navigate(['/login']);
+      },
+      (error) => {
+        console.error('Reset mật khẩu thất bại!', error);
+        this.showPopupMessage('Token không hợp lệ hoặc đã hết hạn!');
+      }
+    );
+  }
+
+  showPopupMessage(message: string) {
+    this.popupMessage = message;
+    this.showPopup = true;
+  }
+
+  closePopup() {
+    this.showPopup = false;
   }
 }

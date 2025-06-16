@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 
-
 @Component({
   selector: 'app-admin-header',
   standalone: false,
@@ -9,8 +8,8 @@ import { Router } from '@angular/router';
   styleUrls: ['./admin-header.component.css']
 })
 export class AdminHeaderComponent implements OnInit {
-  username: string = 'Admin';  // Giá trị mặc định nếu 0 có dữ liệu
-  role: string = 'Admin';       // Giá trị mặc định
+  username: string = 'Admin';  // Giá trị mặc định nếu không có dữ liệu
+  role: string = 'Admin';      // Giá trị mặc định
 
   constructor(private router: Router) {}
 
@@ -27,7 +26,7 @@ export class AdminHeaderComponent implements OnInit {
   logout() {
     // Xóa thông tin đăng nhập
     localStorage.removeItem('userData');
-    localStorage.removeItem('userToken');
+    localStorage.removeItem('token');
 
     // Chuyển hướng về trang đăng nhập
     this.router.navigate(['/login']);

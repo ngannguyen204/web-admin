@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
+import { AuthService } from '../../auth.service';
 
 @Component({
   selector: 'app-forgot-password',
@@ -8,17 +9,38 @@ import { Router } from '@angular/router';
   styleUrls: ['./forgot-password.component.css']
 })
 export class ForgotPasswordComponent {
-  email: string = '';  
-  isConfirmStep: boolean = false; // Khai báo biến mặc định là false
+  email: string = '';
+  isConfirmStep: boolean = false;
+  showPopup: boolean = false;
+  popupMessage: string = '';
 
-  constructor(private router: Router) {}
+  constructor(private router: Router, private authService: AuthService) {}
 
   onSubmit() {
-    if (this.email.trim()) {
-      console.log('Email sent to:', this.email);
-      this.router.navigate(['/confirm-code']); // Chuyển hướng đến trang Confirm Code
-    } else {
-      alert("Vui lòng nhập email!");
+    if (!this.email.trim()) {
+      this.showPopupMessage('Vui lòng nhập đủ các trường!');
+      return;
     }
+
+    this.authService.forgotPassword(this.email).subscribe(
+      (response: any) => {
+        console.log('Email sent to:', this.email);
+        this.showPopupMessage('Email đã được gửi thành công!');
+        this.router.navigate(['/confirm-code']);
+      },
+      (error) => {
+        console.error('Gửi email thất bại!', error);
+        this.showPopupMessage('Email không tồn tại!');
+      }
+    );
+  }
+
+  showPopupMessage(message: string) {
+    this.popupMessage = message;
+    this.showPopup = true;
+  }
+
+  closePopup() {
+    this.showPopup = false;
   }
 }

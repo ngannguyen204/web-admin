@@ -1,39 +1,44 @@
 <div class="promotion-add-container">
-    <h2>Quản lý chương trình giảm giá</h2>
-    <form (ngSubmit)="addPromotion()">
+    <h2>{{ isEditing ? "Chỉnh sửa" : "Thêm mới" }} chương trình giảm giá</h2>
+    <form (ngSubmit)="savePromotion()">
         <div class="form-grid">
             <div class="form-group">
                 <label>Mã chương trình</label>
-                <input type="text" [(ngModel)]="promotion.code" name="code" placeholder="Nhập mã chương trình">
+                <input type="text" [(ngModel)]="promotion.promotion_code" name="promotion_code" placeholder="Nhập mã chương trình">
             </div>
             <div class="form-group">
-                <label>Code áp dụng giảm giá</label>
-                <input type="text" [(ngModel)]="promotion.applyCode" name="applyCode" placeholder="Nhập code giảm giá">
-            </div>
-            <div class="form-group">
-                <label>Chi tiết</label>
-                <input type="text" [(ngModel)]="promotion.detail" name="detail" placeholder="Nhập chi tiết chương trình">
+                <label>Tiêu đề chương trình</label>
+                <input type="text" [(ngModel)]="promotion.promotion_title" name="promotion_title" placeholder="Nhập tiêu đề chương trình">
             </div>
             <div class="form-group">
                 <label>Phần trăm giảm giá</label>
-                <input type="number" [(ngModel)]="promotion.discount" name="discount" placeholder="Nhập % giảm giá">
+                <input type="number" [(ngModel)]="promotion.discount_percent" name="discount_percent" placeholder="Nhập % giảm giá">
             </div>
             <div class="form-group">
                 <label>Ngày bắt đầu</label>
-                <input type="date" [(ngModel)]="promotion.start" name="start">
+                <input type="date" [(ngModel)]="startDateString" name="start_date">
             </div>
             <div class="form-group">
                 <label>Ngày kết thúc</label>
-                <input type="date" [(ngModel)]="promotion.end" name="end">
+                <input type="date" [(ngModel)]="endDateString" name="end_date">
             </div>
             <div class="form-group full-width">
                 <label>Giá trị tối thiểu</label>
-                <input type="number" [(ngModel)]="promotion.minValue" name="minValue" placeholder="Nhập giá trị tối thiểu">
+                <input type="number" [(ngModel)]="promotion.min_order_value" name="min_order_value" placeholder="Nhập giá trị tối thiểu">
             </div>
         </div>
         <div class="button-group">
-            <button class="add-btn" type="submit">Thêm</button>
-            <button class="close-btn" type="button" (click)="cancelAdd()">Huỷ thêm</button>
+            <button class="add-btn" type="submit">{{ isEditing ? "Cập nhật" : "Thêm" }}</button>
+            <button class="close-btn" type="button" (click)="cancelAdd()">Huỷ</button> 
         </div>
     </form>
+</div>
+
+<div *ngIf="showPopup" class="confirm-dialog">
+  <div class="dialog-content">
+    <p>{{ popupMessage }}</p>
+    <div class="dialog-actions">
+      <button (click)="closePopup()" class="confirm-btn">Đóng</button>
+    </div>
+  </div>
 </div>

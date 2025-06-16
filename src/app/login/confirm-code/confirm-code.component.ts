@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
-
+import { AuthService } from '../../auth.service';
 @Component({
   selector: 'app-confirm-code',
   standalone: false,
@@ -8,30 +8,40 @@ import { Router } from '@angular/router';
   styleUrls: ['./confirm-code.component.css']
 })
 export class ConfirmCodeComponent {
-  username: string = '';
+  email: string = '';
   code: string = '';
   rememberMe: boolean = false;
-  codeFieldType: string = 'password'; // Mặc định ẩn code
-  correctCode: string = '123456'; // Giả lập mã xác nhận đúng (thay thế bằng API thực tế)
+  codeFieldType: string = 'password';
+  showPopup: boolean = false;
+  popupMessage: string = '';
 
-  constructor(private router: Router) {}
+  constructor(private router: Router, private authService: AuthService) {}
 
-  // Chuyển đổi hiển thị code
   toggleCodeVisibility() {
     this.codeFieldType = this.codeFieldType === 'password' ? 'text' : 'password';
   }
 
-  // Xử lý xác nhận code
   onConfirmCode() {
-    console.log('Username:', this.username);
-    console.log('Code:', this.code);
-    console.log('Remember Me:', this.rememberMe);
+    this.authService.confirmCode(this.email, this.code).subscribe(
+      (response: any) => {
+        console.log('Xác nhận mã thành công!', response);
+        localStorage.setItem('resetToken', response.resetToken);
+        this.showPopupMessage('Xác nhận mã thành công!');
+        this.router.navigate(['/reset-password']);
+      },
+      (error) => {
+        console.error('Xác nhận mã thất bại!', error);
+        this.showPopupMessage('Mã xác nhận không đúng!');
+      }
+    );
+  }
 
-    if (this.code === this.correctCode) {
-      localStorage.setItem('username', this.username); // Lưu tên đăng nhập
-      this.router.navigate(['/reset-password']); // Điều hướng đến trang reset mật khẩu
-    } else {
-      alert('Mã xác nhận không đúng!');
-    }
+  showPopupMessage(message: string) {
+    this.popupMessage = message;
+    this.showPopup = true;
+  }
+
+  closePopup() {
+    this.showPopup = false;
   }
 }

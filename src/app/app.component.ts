@@ -14,6 +14,8 @@ export class AppComponent {
 
   // Kiểm tra nếu đang ở trang login thì ẩn header & slide-bar
   isLoginPage(): boolean {
-    return this.router.url === '/login';
+    const hiddenPages = ['/login', '/forgot-password', '/reset-password', '/confirm-code'];
+    return hiddenPages.includes(this.router.url);
   }
+  
 }

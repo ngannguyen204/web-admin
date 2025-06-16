@@ -31,13 +31,11 @@
             ],
             "tsConfig": "tsconfig.app.json",
             "assets": [
-              {
-                "glob": "**/*",
-                "input": "public"
-              }
-            ],
+  "src/assets"
+],
             "styles": [
-              "src/styles.css"
+              "src/styles.css",
+              "node_modules/quill/dist/quill.snow.css"
             ],
             "scripts": []
           },
@@ -67,6 +65,9 @@
         },
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
+          "options": {
+            "proxyConfig": "src/proxy.conf.json"
+          },
           "configurations": {
             "production": {
               "buildTarget": "my-app:build:production"
@@ -88,16 +89,14 @@
               "zone.js/testing"
             ],
             "tsConfig": "tsconfig.spec.json",
-            "assets": [
-              {
-                "glob": "**/*",
-                "input": "public"
-              }
-            ],
+           "assets": [
+  "src/assets"
+],
             "styles": [
-              "src/styles.css"
+              "src/styles.css",
+              "node_modules/quill/dist/quill.snow.css"
             ],
-            "scripts": [ "node_modules/quill/dist/quill.min.js"]
+            "scripts": [ ]
           }
         }
       }

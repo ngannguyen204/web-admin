@@ -25,12 +25,16 @@ const routes: Routes = [
   { path: 'promotions', component: PromotionsComponent }, // Trang promotions
   { path: 'order', component: OrderComponent },
   { path: 'promotion-add', component: PromotionAddComponent },
+  { path: 'promotion-add/:id', component: PromotionAddComponent },
   { path: 'blog', component: BlogComponent },
   { path: 'blog-add', component: BlogAddComponent },
+  { path: 'blog-add/:id', component: BlogAddComponent },
   { path: 'product', component: ProductComponent },
-  { path: 'product/add', component: ProductAddComponent },
+  { path: 'product-add', component: ProductAddComponent },
+  { path: 'product-add/:id', component: ProductAddComponent },
   { path: 'admin-account', component: AdminAccountComponent },
   { path: 'admin-account-add', component: AdminAccountAddComponent },
+  
   { path: '', redirectTo: 'admin-account', pathMatch: 'full' },
   { path: 'login', component: LoginComponent},
   { path: 'forgot-password', component: ForgotPasswordComponent },

@@ -1,192 +1,179 @@
 .order-container {
-    width: 100%;
-    padding: 20px;
-    background: #f8f9fa;
-    border-radius: 10px;
+  width: 100%;
+  padding: 20px;
+  background: #f8f9fa;
+  border-radius: 10px;
 }
 
 .filter-container {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 20px;
-    padding: 10px;
-    background: white;
-    border-radius: 8px;
-    box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.1);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 20px;
+  padding: 10px;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.1);
 }
 
 .filter-container button {
-    padding: 8px 12px;
-    background: none;
-    color: black;
-    border: 1px solid #ddd;
-    cursor: pointer;
-    border-radius: 5px;
-    font-weight: bold;
-    transition: 0.3s;
+  padding: 8px 12px;
+  background: none;
+  color: black;
+  border: 1px solid #ddd;
+  cursor: pointer;
+  border-radius: 5px;
+  font-weight: bold;
+  transition: 0.3s;
 }
 
 .filter-container button:hover, 
 .filter-container button.active {
-    background-color: #063B06;
-    color: white;
+  background-color: #063B06;
+  color: white;
 }
 
 .filter-popup {
-    position: absolute;
-    background: white;
-    padding: 20px;
-    box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.15);
-    border-radius: 12px;
-    z-index: 10;
-    min-width: 350px;
-    text-align: center;
+  position: absolute;
+  background: white;
+  padding: 20px;
+  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.15);
+  border-radius: 12px;
+  z-index: 10;
+  min-width: 350px;
+  text-align: center;
 }
 
 .filter-popup h3 {
-    font-size: 18px;
-    font-weight: bold;
-    margin-bottom: 15px;
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 15px;
 }
 
 .status-options {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 12px;
-    justify-content: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  justify-content: center;
 }
 
 .status-options button {
-    padding: 10px 20px;
-    border: 1px solid #063B06;
-    background: white;
-    cursor: pointer;
-    border-radius: 20px;
-    font-weight: bold;
-    transition: 0.3s;
-    font-size: 14px;
-    min-width: 120px;
+  padding: 10px 20px;
+  border: 1px solid #063B06;
+  background: white;
+  cursor: pointer;
+  border-radius: 20px;
+  font-weight: bold;
+  transition: 0.3s;
+  font-size: 14px;
+  min-width: 120px;
 }
 
 .status-options button.active, .status-options button:hover {
-    background-color: #063B06;
-    color: white;
+  background-color: #063B06;
+  color: white;
 }
 
 .filter-popup p {
-    font-size: 13px;
-    color: gray;
-    margin-top: 10px;
-    font-style: italic;
+  font-size: 13px;
+  color: gray;
+  margin-top: 10px;
+  font-style: italic;
 }
 
 .apply-button {
-    padding: 12px;
-    background-color: #063B06;
-    color: white;
-    border: none;
-    cursor: pointer;
-    border-radius: 8px;
-    width: 100%;
-    font-weight: bold;
-    font-size: 15px;
-    margin-top: 10px;
-    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  padding: 12px;
+  background-color: #063B06;
+  color: white;
+  border: none;
+  cursor: pointer;
+  border-radius: 8px;
+  width: 100%;
+  font-weight: bold;
+  font-size: 15px;
+  margin-top: 10px;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 .apply-button:hover {
-    background-color: #045A04;
+  background-color: #045A04;
 }
 
 
 table {
-    width: 100%;
-    border-collapse: collapse;
-    background: white;
-    border-radius: 8px;
-    overflow: hidden;
-    box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  border-collapse: collapse;
+  background: white;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.1);
 }
 
 th, td {
-    padding: 12px;
-    border-bottom: 1px solid #ddd;
-    text-align: center;
-    font-size: 14px;
+  padding: 12px;
+  border-bottom: 1px solid #ddd;
+  text-align: center;
+  font-size: 14px;
 }
 
 th {
-    background-color: #f1f1f1;
-    font-weight: bold;
+  background-color: #f1f1f1;
+  font-weight: bold;
 }
 
 tr:hover {
-    background-color: #f8f9fa;
+  background-color: #f8f9fa;
 }
-  
-  .status-box {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 150px; /* Đặt chiều rộng cố định */
-    height: 40px; /* Đặt chiều cao cố định */
-    font-weight: bold;
-    border-radius: 20px; /* Bo góc tròn hơn */
-    text-align: center;
-  }
 
-  
-  /* Màu nền cho từng trạng thái */
-  .pending {
-    background-color: #FFF3CD; /* Vàng nhạt */
-    color: #856404;
-  }
-  
-  .shipping {
-    background-color: #CCE5FF; /* Xanh dương nhạt */
-    color: #004085;
-  }
-  
-  .processing {
-    background-color: #E2D9F3; /* Tím nhạt */
-    color: #6A0DAD;
-  }
-  
-  .delivered {
-    background-color: #D4EDDA; /* Xanh lá nhạt */
-    color: #155724;
-  }
-  
-  .canceled {
-    background-color: #F8D7DA; /* Đỏ nhạt */
-    color: #721C24;
-  }
-  .pagination {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-top: 20px;
-    gap: 15px;
-  }
-  
-  .pagination button {
-    background-color: #063B06;
-    color: white;
-    padding: 8px 16px;
-    border: none;
-    border-radius: 5px;
-    font-weight: bold;
-    cursor: pointer;
-    transition: 0.3s;
-  }
-  
-  .pagination button:disabled {
-    background-color: #ccc;
-    cursor: not-allowed;
+.status-box {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 150px; /* Đặt chiều rộng cố định */
+  height: 40px; /* Đặt chiều cao cố định */
+  font-weight: bold;
+  border-radius: 20px; /* Bo góc tròn hơn */
+  text-align: center;
+}
+
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 20px;
+  gap: 15px;
+}
+
+.pagination button {
+  background-color: #063B06;
+  color: white;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 5px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.pagination button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
   }
   
   .pagination span {
     font-size: 16px;
     font-weight: bold;
   }
+  .pending { background-color: #FFF3CD; color: #856404; }
+.processing { background-color: #CCE5FF; color: #004085; }
+.shipping { background-color: #E2D9F3; color: #6A0DAD; }
+.delivered { background-color: #D4EDDA; color: #155724; }
+.cancelled { background-color: #F8D7DA; color: #721C24; }
+
+select {
+  border-radius: 5px;
+  padding: 5px;
+  font-weight: bold;
+}
+

@@ -1,32 +1,31 @@
 import { Component, OnInit } from '@angular/core';
 import { Chart } from 'chart.js/auto';
-import { CommonModule } from '@angular/common';
-import { HttpClient } from '@angular/common/http';
-
+import { DashboardService } from '../dashboard.service';
 @Component({
   selector: 'app-dashboard',
-  standalone: false,
+  standalone:false,
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.css']
 })
 export class DashboardComponent implements OnInit {
-  selectedMonth: number = new Date().getMonth() + 1; // Mặc định tháng hiện tại
-  currentDate: string = new Date().toISOString().split('T')[0]; // Ngày hôm nay
-  salesData: any[] = []; // Dữ liệu biểu đồ
-  topProducts: any[] = []; // 10 sản phẩm bán chạy nhất
-  stats: any = {}; // Lượt truy cập, đơn hàng, doanh thu
-  months: number[] = Array.from({ length: 12 }, (_, i) => i + 1); // Danh sách tháng 1-12
-  chartInstance: Chart | undefined; // Lưu trữ biểu đồ để tránh vẽ đè
+  selectedMonth: number = new Date().getMonth() + 1;
+  currentDate: string = new Date().toISOString().split('T')[0];
+  salesData: any[] = [];
+  topSellingProducts: any[] = [];
+  stats: any = {};
+  months: number[] = Array.from({ length: 12 }, (_, i) => i + 1);
+  chartInstance: Chart | undefined;
 
-  constructor(private http: HttpClient) {}
+  constructor(private dashboardService: DashboardService) {}
 
   ngOnInit() {
-    this.fetchStats(); // Lấy thống kê
-    this.fetchData();  // Lấy dữ liệu bảng & biểu đồ
+    this.fetchStats();
+    this.fetchData();
+    this.fetchTopSellingProducts();
   }
 
   fetchStats() {
-    this.http.get(`API_ENDPOINT/stats?date=${this.currentDate}`).subscribe((data: any) => {
+    this.dashboardService.getStats(this.currentDate).subscribe((data: any) => {
       this.stats = {
         visits: data.visits,
         orders: data.orders,
@@ -39,28 +38,19 @@ export class DashboardComponent implements OnInit {
     const currentMonth = new Date().getMonth() + 1;
     if (this.selectedMonth > currentMonth) {
       this.salesData = [];
-      this.topProducts = [];
-      this.destroyChart(); // Xóa biểu đồ khi không có dữ liệu
+      this.destroyChart();
       return;
     }
 
-    interface Product {
-      id: number;
-      name: string;
-      price: number;
-      revenue: number;
-      quantity: number;
-      category: string;
-    }
-
-    this.http.get(`API_ENDPOINT/sales?month=${this.selectedMonth}`).subscribe((data: any) => {
+    this.dashboardService.getSalesData(this.selectedMonth).subscribe((data: any) => {
       this.salesData = data.chartData;
+      this.renderChart();
+    });
+  }
 
-      this.topProducts = data.topProducts
-        .sort((a: Product, b: Product) => b.revenue - a.revenue)
-        .slice(0, 10);
-
-      this.renderChart(); // Cập nhật biểu đồ khi có dữ liệu mới
+  fetchTopSellingProducts() {
+    this.dashboardService.getTopSellingProducts().subscribe((data: any) => {
+      this.topSellingProducts = data;
     });
   }
 
@@ -71,7 +61,6 @@ export class DashboardComponent implements OnInit {
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
-    // Xóa biểu đồ cũ trước khi vẽ mới
     this.destroyChart();
 
     this.chartInstance = new Chart(ctx, {
@@ -98,6 +87,6 @@ export class DashboardComponent implements OnInit {
 
   onMonthChange(event: any) {
     this.selectedMonth = parseInt(event.target.value, 10);
-    this.fetchData(); // Tải dữ liệu mới khi thay đổi tháng
+    this.fetchData();
   }
 }

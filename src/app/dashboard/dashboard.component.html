@@ -11,7 +11,7 @@
     </div>
     <div class="stat-box">
       <h3>Doanh thu hôm nay</h3>
-      <p>{{ stats.revenue | currency }}</p>
+      <p>{{ stats.revenue  }}</p>
     </div>
   </div>
 
@@ -32,26 +32,20 @@
 
   <!-- Bảng sản phẩm bán chạy -->
   <div class="top-products">
-    <h2>Top 10 Sản phẩm có doanh thu cao nhất</h2>
+    <h2>Top 5 Sản phẩm bán chạy nhất</h2>
     <table>
       <thead>
         <tr>
           <th>Mã</th>
           <th>Tên sản phẩm</th>
-          <th>Giá</th>
-          <th>Doanh số</th>
-          <th>Số lượng</th>
-          <th>Phân loại</th>
+          <th>Số lượng bán</th>
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let product of topProducts">
-          <td>{{ product.id }}</td>
-          <td>{{ product.name }}</td>
-          <td>{{ product.price | currency }}</td>
-          <td>{{ product.revenue | currency }}</td>
-          <td>{{ product.quantity }}</td>
-          <td>{{ product.category }}</td>
+        <tr *ngFor="let product of topSellingProducts">
+          <td>{{ product._id }}</td>
+          <td>{{ product.product_name }}</td>
+          <td>{{ product.total_sold }}</td>
         </tr>
       </tbody>
     </table>

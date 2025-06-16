@@ -1,7 +1,7 @@
 <div class="login-container">
     <!-- Phần logo bên trái -->
     <div class="logo-section">
-      <img src="asset/image/logo.png" class="logo" />
+      <img src="assets/image/logo (2).png" class="logo" />
     </div>
   
     <!-- Phần form đăng nhập bên phải -->
@@ -12,8 +12,8 @@
   
         <!-- Ô nhập tên đăng nhập -->
         <div class="input-group">
-          <label for="username">Tên đăng nhập</label>
-          <input type="text" id="username" [(ngModel)]="username" name="username" required />
+          <label for="email">Email</label>
+          <input type="email" id="email" [(ngModel)]="email" name="email" required />
         </div>
   
         <!-- Ô nhập mật khẩu -->
@@ -35,7 +35,7 @@
             <input type="checkbox" [(ngModel)]="rememberMe" name="rememberMe" />
             Lưu tài khoản
           </label>
-          <a routerLink="/forgot-password" class="forgot-password">Quên mật khẩu?</a>
+          <a routerLink="/forgot-password" class="forgot-password" (click)="$event.preventDefault()">Quên mật khẩu?</a>
         </div>
   
         <!-- Nút đăng nhập -->
@@ -44,3 +44,10 @@
     </div>
   </div>
   
+  <!-- Popup -->
+<div class="popup-overlay" *ngIf="showPopup">
+  <div class="popup-content">
+    <p>{{ popupMessage }}</p>
+    <button (click)="closePopup()">Đóng</button>
+  </div>
+</div>

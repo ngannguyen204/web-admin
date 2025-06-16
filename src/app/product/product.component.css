@@ -45,7 +45,7 @@
 }
 
 
-/* Báº¢NG HIá»‚N THá»Š Sáº¢N PHáº¨M */
+/* bảng hiện ds sản phẩm */
 table {
     width: 100%;
     border-collapse: collapse;
@@ -71,7 +71,7 @@ tr:hover {
     background-color: #f8f9fa;
 }
 
-/* NÃšT Báº¤M */
+/* Nút bấm */
 .action-buttons {
     display: flex;
     justify-content: center;
@@ -115,4 +115,39 @@ tr:hover {
     transform: translate(-50%, -50%);
     border-radius: 10px;
     z-index: 100;
+    align-items: center;
+}
+.button-group {
+    display: flex;
+    justify-content: center;
+    gap: 10px; /* Khoảng cách giữa hai nút */
+    margin-top: 10px; /* Thêm khoảng cách với đoạn text phía trên */
+  }
+
+/* PHÂN TRANG */
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 15px;
+}
+
+.pagination button {
+    background-color: #063B06;
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 5px;
+    margin: 0 5px;
+    cursor: pointer;
+    transition: background 0.3s ease-in-out;
+}
+
+.pagination button:hover {
+    background-color: #052B05;
+}
+
+.pagination button:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
 }

@@ -31,20 +31,33 @@
         </thead>
         <tbody>
             <tr *ngFor="let promo of filteredPromotions()">
-                <td>{{ promo.id }}</td>
-                <td>{{ promo.code }}</td>
-                <td>{{ promo.detail }}</td>
-                <td>{{ promo.start }}</td>
-                <td>{{ promo.end }}</td>
-                <td>{{ promo.status }}</td>
-                <td>{{ promo.discount }}%</td>
-                <td>{{ promo.minValue | number }}</td>
+                <td>{{ promo._id }}</td>
+                <td>{{ promo.promotion_code }}</td>
+                <td>{{ promo.promotion_title }}</td>
+                <td>{{ promo.start_date | date:'dd/MM/yyyy' }}</td>
+                <td>{{ promo.end_date | date:'dd/MM/yyyy' }}</td>
+                <td>{{ promo.promotion_status }}</td>
+                <td>{{ promo.discount_percent*100 | number }}</td>
+                <td>{{ promo.min_order_value | number }}</td>
+                               
                 <td>
-                    <button class="delete-btn" (click)="deletePromotion(promo.id)">Xóa</button>
-                </td>
+                    <button (click)="editPromotion(promo)">✏️</button>
+                    <button (click)="showConfirmDeleteDialog(promo._id)">🗑️</button>
+                  </td>
             </tr>
         </tbody>
     </table>
+
+    <!-- Popup xác nhận xóa -->
+    <div *ngIf="isConfirmDialogVisible" class="confirm-dialog">
+        <div class="dialog-content">
+            <p>Bạn có chắc chắn muốn xóa chương trình giảm giá này?</p>
+            <div class="dialog-actions">
+                <button (click)="confirmDelete()" class="confirm-btn">✅ Xác nhận</button>
+                <button (click)="closeConfirmDialog()" class="cancel-btn">❌ Hủy</button>
+            </div>
+        </div>
+    </div>
 
     <div class="pagination">
         <button (click)="prevPage()" [disabled]="currentPage === 1">‹</button>
@@ -52,3 +65,4 @@
         <button (click)="nextPage()" [disabled]="currentPage >= totalPages">›</button>
     </div>
 </div>
+

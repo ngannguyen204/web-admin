@@ -1,65 +1,100 @@
 <div class="popup">
-    <h2>{{ product.id ? 'Chỉnh sửa' : 'Thêm' }} sản phẩm</h2>
-  
+  <h2>{{ product._id ? 'Chỉnh sửa' : 'Thêm' }} sản phẩm</h2>
+
+  <form (ngSubmit)="saveProduct()" #productForm="ngForm">
     <div class="image-upload">
-      <div class="image-placeholder">+</div>
+      <img *ngIf="product.product_image" [src]="product.product_image" alt="Product Image" class="product-image">
+      <input type="file" (change)="onFileSelected($event)" accept="image/*">
       <span>Thêm ảnh</span>
     </div>
-  
+
     <div class="form-group">
       <div class="input-group">
         <label for="name">Tên sản phẩm</label>
-        <input id="name" [(ngModel)]="product.name" type="text" placeholder="Nhập tên sản phẩm">
+        <input id="name" [(ngModel)]="product.product_name" name="product_name" type="text" placeholder="Nhập tên sản phẩm" required>
+        <div *ngIf="productForm.submitted && !product.product_name" class="error-message">
+          Tên sản phẩm là bắt buộc.
+        </div>
       </div>
-      <div class="input-group">
-        <label for="code">Mã sản phẩm</label>
-        <input id="code" [(ngModel)]="product.code" type="text" placeholder="Nhập mã sản phẩm">
-      </div>
-    </div>
-  
-    <div class="form-group">
       <div class="input-group">
         <label for="price">Giá</label>
-        <input id="price" [(ngModel)]="product.price" type="number" placeholder="Nhập giá sản phẩm">
-      </div>
-      <div class="input-group">
-        <label for="quantity">Số lượng</label>
-        <input id="quantity" [(ngModel)]="product.quantity" type="number" placeholder="Nhập số lượng">
+        <input id="price" [(ngModel)]="product.price" name="price" type="number" placeholder="Nhập giá sản phẩm" required>
+        <div *ngIf="productForm.submitted && !product.price" class="error-message">
+          Giá sản phẩm là bắt buộc.
+        </div>
       </div>
     </div>
-  
+
+    <!-- Nhóm 1: quantity, gender, face_shape -->
+    <div class="form-group">
+      <div class="input-group">
+        <label for="quantity">Số lượng</label>
+        <input id="quantity" [(ngModel)]="product.stock" name="stock" type="number" placeholder="Nhập số lượng" required>
+        <div *ngIf="productForm.submitted && !product.stock" class="error-message">
+          Số lượng là bắt buộc.
+        </div>
+      </div>
+      <div class="input-group">
+        <label for="gender">Giới tính</label>
+        <input id="gender" [(ngModel)]="product.gender" name="gender" type="text" placeholder="Nhập giới tính (ví dụ: Nam, Nữ)">
+      </div>
+      <div class="input-group">
+        <label for="face_shape">Khuôn mặt</label>
+        <input id="face_shape" [(ngModel)]="product.face_shape" name="face_shape" type="text" placeholder="Nhập khuôn mặt (ví dụ: Tròn, Vuông)">
+      </div>
+    </div>
+
+    <!-- Nhóm 2: glasses_shape, colour, category -->
+    <div class="form-group">
+      <div class="input-group">
+        <label for="glasses_shape">Hình dạng kính</label>
+        <input id="glasses_shape" [(ngModel)]="product.glasses_shape" name="glasses_shape" type="text" placeholder="Nhập hình dạng kính">
+      </div>
+      <div class="input-group">
+        <label for="colour">Màu sắc</label>
+        <input id="colour" [(ngModel)]="product.colour" name="colour" type="text" placeholder="Nhập màu sắc">
+      </div>
+      <div class="input-group">
+        <label for="category">Phân loại</label>
+        <select id="category" [(ngModel)]="product.category" name="category" required>
+          <option value="">Chọn phân loại</option>
+          <option *ngFor="let category of categories" [value]="category">{{ category }}</option>
+        </select>
+        <div *ngIf="productForm.submitted && !product.category" class="error-message">
+          Phân loại là bắt buộc.
+        </div>
+      </div>
+    </div>
+
     <div class="form-group">
       <div class="input-group full-width">
         <label for="description">Mô tả</label>
-        <textarea id="description" [(ngModel)]="product.description" placeholder="Nhập mô tả sản phẩm"></textarea>
+        <textarea id="description" [(ngModel)]="product.description" name="description" placeholder="Nhập mô tả sản phẩm"></textarea>
       </div>
     </div>
-  
-    <div class="form-group">
-      <div class="input-group">
-        <label for="category">Phân loại</label>
-        <select id="category" [(ngModel)]="product.category">
-          <option value="loai1">Loại 1</option>
-          <option value="loai2">Loại 2</option>
-          <option value="loai3">Loại 3</option>
-        </select>
-      </div>
-    </div>
-  
+
     <div class="button-group">
-      <button class="save-btn" (click)="saveProduct()">Thêm</button>
-      <button class="cancel-btn" (click)="close.emit()">Hủy thêm</button>
+      <button class="save-btn" type="submit">{{ product._id ? 'Cập nhật' : 'Lưu' }}</button>
+      <button class="cancel-btn" type="button" (click)="close.emit()">Hủy</button>
+    </div>
+  </form>
+</div>
+
+<div class="confirm-popup" *ngIf="isConfirmPopupVisible || isSuccessPopupVisible">
+  <div class="popup-content">
+    <p *ngIf="isConfirmPopupVisible">
+      Bạn chưa điền đủ thông tin. Hủy thao tác để trở về danh sách sản phẩm hoặc tiếp tục điền?
+    </p>
+    <p *ngIf="isSuccessPopupVisible">{{ successMessage }}</p>
+    
+    <div class="popup-buttons" *ngIf="isConfirmPopupVisible">
+      <button class="cancel-btn" (click)="cancelAction()">Hủy thao tác</button>
+      <button class="continue-btn" (click)="continueAction()">Tiếp tục điền</button>
+    </div>
+
+    <!-- Thêm nút đóng cho popup thông báo thành công -->
+    <div class="popup-buttons" *ngIf="isSuccessPopupVisible">
+      <button class="close-btn" (click)="closeSuccessPopup()">Đóng</button>
     </div>
   </div>
-  
-  <!-- Popup cảnh báo khi thiếu thông tin -->
-  <div class="confirm-popup" *ngIf="isConfirmPopupVisible">
-    <div class="popup-content">
-      <p>Bạn chưa điền đủ thông tin. Hủy thao tác để trở về danh sách sản phẩm hoặc tiếp tục điền?</p>
-      <div class="popup-buttons">
-        <button class="cancel-btn" (click)="cancelAction()">Hủy thao tác</button>
-        <button class="continue-btn" (click)="continueAction()">Tiếp tục điền</button>
-      </div>
-    </div>
-  </div>
-  
+</div>

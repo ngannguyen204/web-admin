@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
+import { AdminAccountService } from '../../admin-account.service';
 
 @Component({
   selector: 'app-admin-account-add',
@@ -10,35 +11,47 @@ import { Router } from '@angular/router';
 export class AdminAccountAddComponent {
   newAccount: any = {
     username: '',
-    employeeId: '',
     email: '',
-    phone: ''
+    password:''
   };
 
-  errorMessage: string = ''; // ✅ Thêm biến để sửa lỗi
+  errorMessage: string = ''; 
   showPopup: boolean = false;
   popupMessage: string = '';
 
-  constructor(public router: Router) {}
+  constructor(public router: Router,
+    private adminAccountService: AdminAccountService
+  ) {}
 
   cancel() {
     this.router.navigate(['/admin-account']); 
   }
 
   save() {
-    if (!this.newAccount.username || !this.newAccount.employeeId || !this.newAccount.email || !this.newAccount.phone) {
+    if (!this.newAccount.username  || !this.newAccount.email || !this.newAccount.password) {
       this.errorMessage = 'Vui lòng điền đầy đủ thông tin!';
       this.showPopupMessage(this.errorMessage);
       return;
     }
 
-    console.log("Thêm mới:", this.newAccount);
-    let adminList = JSON.parse(localStorage.getItem('adminList') || '[]');
-    adminList.unshift(this.newAccount);
-    localStorage.setItem('adminList', JSON.stringify(adminList));
-
-    this.showPopupMessage('Thêm tài khoản thành công!', true);
-  }
+   // Gọi API để thêm Admin mới
+   this.adminAccountService.createAdmin(this.newAccount).subscribe(
+    (response: any) => {
+      console.log('Admin created:', response);
+      this.showPopupMessage('Thêm tài khoản thành công!', true);
+    },
+    (error) => {
+      console.error('Error creating admin:', error);
+      // Log thông báo lỗi chi tiết từ server
+      if (error.error && error.error.message) {
+        this.errorMessage = error.error.message;
+      } else {
+        this.errorMessage = 'Lỗi khi thêm tài khoản. Vui lòng thử lại!';
+      }
+      this.showPopupMessage(this.errorMessage);
+    }
+  );
+}
 
   showPopupMessage(message: string, redirect: boolean = false) {
     this.popupMessage = message;

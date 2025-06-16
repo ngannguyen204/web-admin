@@ -1,4 +1,6 @@
 <div class="blog-form">
+  <h2>{{ blog._id ? 'Chỉnh sửa' : 'Thêm' }} bài viết</h2>
+
   <div class="upload-image">
     <label for="upload">
       <img *ngIf="blogImage" [src]="blogImage" class="preview-img">
@@ -11,14 +13,14 @@
 
   <input type="text" placeholder="Nhập tiêu đề..." class="title-input" [(ngModel)]="blogTitle">
 
-  <div class="editor-toolbar">
-    <button (click)="formatText('bold')"><i class="fas fa-bold"></i></button>
-    <button (click)="formatText('italic')"><i class="fas fa-italic"></i></button>
-    <button (click)="formatText('underline')"><i class="fas fa-underline"></i></button>
-    <button (click)="insertImage()"><i class="far fa-image"></i></button>
-  </div>
+  <input type="text" placeholder="Nhập thể loại..." class="title-input" [(ngModel)]="category">
 
-  <quill-editor [(ngModel)]="blogContent" [modules]="editorModules"></quill-editor>
+  <!-- Quill Editor -->
+  <quill-editor
+    [(ngModel)]="blogContent"
+    [modules]="quillModules"
+    placeholder="Nhập nội dung bài viết..."
+  ></quill-editor>
 
   <p class="timestamp">
     <i class="fas fa-calendar-alt"></i> Ngày tạo: {{ createdAt | date: 'dd/MM/yyyy HH:mm' }}
@@ -26,10 +28,10 @@
 
   <div class="button-group">
     <button class="add-btn" (click)="saveBlog()">
-      <i class="fas fa-plus-circle"></i> Thêm
+      <i class="fas fa-plus-circle icon-spacing"> </i> {{ blogData ? 'Cập nhật' : 'Thêm' }}
     </button>
     <button class="cancel-btn" (click)="cancel()">
-      <i class="fas fa-times-circle"></i> Hủy thêm
+      <i class="fas fa-times-circle icon-spacing"> </i> Hủy 
     </button>
   </div>
 </div>

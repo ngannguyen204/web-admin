@@ -25,7 +25,7 @@ import { ResetPasswordComponent } from './login/reset-password/reset-password.co
 
 @NgModule({
   declarations: [ // Nơi khai báo các component
-    AppComponent,PromotionsComponent,PromotionAddComponent,DashboardComponent, OrderComponent, BlogComponent, BlogAddComponent, ProductComponent, ProductAddComponent, AdminAccountComponent, AdminAccountAddComponent, LoginComponent, ForgotPasswordComponent, ConfirmCodeComponent, ResetPasswordComponent, SlideBarComponent,AdminHeaderComponent
+    AppComponent,PromotionsComponent,PromotionAddComponent,DashboardComponent, OrderComponent, BlogComponent, BlogAddComponent, ProductComponent, ProductAddComponent, AdminAccountComponent, AdminAccountAddComponent, LoginComponent, ForgotPasswordComponent, ConfirmCodeComponent, ResetPasswordComponent, SlideBarComponent,AdminHeaderComponent, 
   ],
   imports: [ // Chỉ để module ở đây
     BrowserModule,
@@ -33,7 +33,8 @@ import { ResetPasswordComponent } from './login/reset-password/reset-password.co
     FormsModule,
     HttpClientModule,
     CommonModule,
-    QuillModule.forRoot(),
+    QuillModule.forRoot()
+    
   ],
   providers: [],
   bootstrap: [AppComponent]
