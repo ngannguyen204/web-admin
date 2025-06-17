@@ -1,5 +1,8 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
+import { FormsModule } from '@angular/forms';
+import { HttpClientModule } from '@angular/common/http';
+import { CommonModule } from '@angular/common';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 
@@ -18,12 +21,9 @@ import { ForgotPasswordComponent } from './login/forgot-password/forgot-password
 import { ConfirmCodeComponent } from './login/confirm-code/confirm-code.component';
 import { ResetPasswordComponent } from './login/reset-password/reset-password.component';
 
-import { FormsModule } from '@angular/forms';
-import { HttpClientModule } from '@angular/common/http';
-import { CommonModule } from '@angular/common';
 import { QuillModule } from 'ngx-quill';
 
-
+// 👇 COMPAT Firebase version for AngularFireDatabase (NOT modular)
 import { AngularFireModule } from '@angular/fire/compat';
 import { AngularFireDatabaseModule } from '@angular/fire/compat/database';
 import { AngularFireAnalyticsModule } from '@angular/fire/compat/analytics';
@@ -58,7 +58,7 @@ import { firebaseConfig } from './firebase.config';
 
     AngularFireModule.initializeApp(firebaseConfig),
     AngularFireDatabaseModule,
-    AngularFireAnalyticsModule
+    AngularFireAnalyticsModule,
   ],
   providers: [],
   bootstrap: [AppComponent],

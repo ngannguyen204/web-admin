@@ -6,7 +6,7 @@ export class Product {
   stock: number;
   image: string;
   categoryid: string;
-  ratings: number;
+  ratings?: number;
 
   constructor(init?: Partial<Product>) {
     this.productid = init?.productid || '';

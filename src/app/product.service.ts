@@ -1,73 +1,96 @@
-// product.service.ts
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http'; // Import HttpHeaders
-import { Observable } from 'rxjs';
+import { AngularFireDatabase } from '@angular/fire/compat/database';
+import { Observable, from } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { Product } from './class/product';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class ProductService {
-  private apiUrl = 'http://localhost:8688/product'; // Đổi URL tùy theo backend của bạn
+  private basePath = 'products';
 
-  constructor(private http: HttpClient) { }
-
-  // Hàm lấy token từ localStorage
-
-  private getAuthHeaders(): HttpHeaders {
-    const token = localStorage.getItem('authToken');
-    console.log("Token from localStorage:", token);
-    if (token) {
-      return new HttpHeaders().set('Authorization', `Bearer ${token}`);
-    }
-    return new HttpHeaders();
-  }
-
-  getProducts(): Observable<Product[]> {
-    return this.http.get<Product[]>(`${this.apiUrl}`);
-  }
-
-  getProductById(id: string): Observable<Product> {
-    return this.http.get<Product>(`${this.apiUrl}/${id}`);
-  }
-
-  getProductsByCategory(category: string): Observable<Product[]> {
-    return this.http.get<Product[]>(`${this.apiUrl}/category/${category}`);
-  }
-
-  getProductsByAttributes(gender: string, faceshape: string, material: string): Observable<Product[]> {
-    return this.http.get<Product[]>(`${this.apiUrl}/filter`, {
-      params: { gender, faceshape, material }
-    });
-  }
-
-  getTopSellingProducts(): Observable<Product[]> {
-    return this.http.get<Product[]>(`${this.apiUrl}/top-selling`);
-  }
-
-  getLatestProducts(): Observable<Product[]> {
-    return this.http.get<Product[]>(`${this.apiUrl}/latest`);
-  }
-
-  createProduct(product: Product): Observable<Product> {
-    const headers = this.getAuthHeaders(); // Lấy headers với token
-    return this.http.post<Product>(`${this.apiUrl}`, product, { headers });
-  }
-
-  updateProduct(id: string, product: Product): Observable<Product> {
-    const headers = this.getAuthHeaders(); // Lấy headers với token
-    console.log("Sending update request to:", `${this.apiUrl}/${id}`); // Log URL
-    console.log("Request headers:", headers); // Log headers
-    console.log("Request body:", product); // Log dữ liệu gửi lên server
-    return this.http.put<Product>(`${this.apiUrl}/${id}`, product, { headers });
+constructor(private db: AngularFireDatabase) {
+  console.log('✅ AngularFireDatabase is', this.db);
 }
 
-  deleteProduct(id: string): Observable<void> {
-    const headers = this.getAuthHeaders(); // Lấy headers với token
-    return this.http.delete<void>(`${this.apiUrl}/${id}`, { headers });
+  getProducts(): Observable<Product[]> {
+    console.log('📦 [ProductService] getProducts called');
+
+    return this.db
+      .list<Product>(this.basePath)
+      .snapshotChanges()
+      .pipe(
+        map(actions => {
+          const result = actions.map(a => {
+            const data = a.payload.val() as Product;
+            const key = a.key ?? '';
+            const merged: Product = { ...data, productid: key };
+            return merged;
+          });
+
+          console.log('✅ [ProductService] Loaded products:', result);
+          return result;
+        })
+      );
+  }
+
+  getProductById(id: string): Observable<Product | null> {
+    return this.db
+      .object<Product>(`${this.basePath}/${id}`)
+      .valueChanges()
+      .pipe(
+        map(product => {
+          if (product) {
+            const result: Product = { ...product, productid: id };
+            console.log('🔍 [ProductService] Fetched product by ID:', result);
+            return result;
+          }
+          return null;
+        })
+      );
+  }
+
+  createProduct(product: Product): Observable<void> {
+    const productsRef = this.db.list(this.basePath);
+    return from(productsRef.push(product)).pipe(map(() => {
+      console.log('🆕 [ProductService] Product created:', product);
+    }));
+  }
+
+  updateProduct(productid: string, product: Product): Observable<void> {
+    return from(
+      this.db.object(`${this.basePath}/${productid}`).update(product)
+    ).pipe(map(() => {
+      console.log('✏️ [ProductService] Product updated:', productid, product);
+    }));
+  }
+
+  deleteProduct(productid: string): Observable<void> {
+    return from(
+      this.db.object(`${this.basePath}/${productid}`).remove()
+    ).pipe(map(() => {
+      console.log('🗑️ [ProductService] Product deleted:', productid);
+    }));
+  }
+
+  getProductsByCategory(categoryid: string): Observable<Product[]> {
+    return this.getProducts().pipe(
+      map(products => {
+        const filtered = products.filter(p => p.categoryid === categoryid);
+        console.log(`📂 [ProductService] Products in category ${categoryid}:`, filtered);
+        return filtered;
+      })
+    );
   }
 
   getCategories(): Observable<string[]> {
-    return this.http.get<string[]>(`${this.apiUrl}/categories`);
+    return this.db
+      .list<string>('categories')
+      .valueChanges()
+      .pipe(map(categories => {
+        console.log('📋 [ProductService] Categories:', categories);
+        return categories || [];
+      }));
   }
 }

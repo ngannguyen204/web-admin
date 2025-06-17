@@ -21,7 +21,7 @@ export class AdminAccountComponent implements OnInit {
   itemsPerPage: number = 5;
 
   adminList: Admin[] = [];
-  userList: Customer[] = []; // Khởi tạo userList là mảng rỗng
+  userList: Customer[] = [];
 
   private refreshInterval: any;
 
@@ -31,7 +31,6 @@ export class AdminAccountComponent implements OnInit {
     this.loadAdmins();
     this.loadCustomers();
 
-    // Tự động làm mới dữ liệu mỗi 10 giây
     this.refreshInterval = setInterval(() => {
       if (!this.isAdminView) {
         this.loadCustomers();
@@ -40,7 +39,6 @@ export class AdminAccountComponent implements OnInit {
   }
 
   ngOnDestroy(): void {
-    // Hủy interval khi component bị hủy
     if (this.refreshInterval) {
       clearInterval(this.refreshInterval);
     }
@@ -58,26 +56,23 @@ export class AdminAccountComponent implements OnInit {
   }
 
   loadCustomers(): void {
-    // Lấy token từ localStorage
-    const token = localStorage.getItem('authToken'); // Đảm bảo key 'authToken' khớp với nơi lưu trữ token
+    const token = localStorage.getItem('authToken');
     if (!token) {
-      console.error('Token không tồn tại');
+      console.error('Token not found');
       return;
     }
-  
-    // Thêm token vào header
+
     const headers = new HttpHeaders({
       'Authorization': `Bearer ${token}`
     });
-  
-    // Gửi yêu cầu với header chứa token
+
     this.adminAccountService.getCustomers(headers).subscribe(
       (response: { success: boolean, customers: Customer[] }) => {
-        this.userList = response.customers || []; // Lấy mảng customers từ response
+        this.userList = response.customers || [];
       },
       (error) => {
         console.error('Error loading customers:', error);
-        this.userList = []; // Khởi tạo userList là mảng rỗng nếu có lỗi
+        this.userList = [];
       }
     );
   }
@@ -97,8 +92,8 @@ export class AdminAccountComponent implements OnInit {
 
   getFilteredUsers(): Customer[] {
     if (!Array.isArray(this.userList)) {
-      console.error('userList không phải là một mảng:', this.userList);
-      return []; // Trả về mảng rỗng nếu userList không phải là mảng
+      console.error('userList is not an array:', this.userList);
+      return [];
     }
     return this.userList.filter(user =>
       user.name.toLowerCase().includes(this.searchText.toLowerCase()) ||
@@ -162,9 +157,9 @@ export class AdminAccountComponent implements OnInit {
   deleteItem(): void {
     if (this.selectedItem) {
       if (this.isAdminView) {
-        this.adminAccountService.deleteAdmin(this.selectedItem._id).subscribe(
+        this.adminAccountService.deleteAdmin(this.selectedItem.adminid).subscribe(
           () => {
-            this.adminList = this.adminList.filter(admin => admin.adminid !== this.selectedItem._id);
+            this.adminList = this.adminList.filter(admin => admin.adminid !== this.selectedItem.adminid);
             this.hideDeletePopup();
           },
           (error) => {
@@ -172,7 +167,7 @@ export class AdminAccountComponent implements OnInit {
           }
         );
       } else {
-        // Xóa customer nếu cần
+        // Handle customer deletion if needed
       }
     }
   }

@@ -6,8 +6,6 @@ import { SlideBarComponent } from './slide-bar/slide-bar.component';
 import { OrderComponent } from './order/order.component';
 import { PromotionsComponent } from './promotions/promotions.component';
 import { PromotionAddComponent } from './promotions/promotion-add/promotion-add.component';
-import { BlogComponent } from './blog/blog.component';
-import { BlogAddComponent } from './blog/blog-add/blog-add.component';
 import { ProductComponent } from './product/product.component';
 import { ProductAddComponent } from './product/product-add/product-add.component';
 import { AdminAccountComponent } from './admin-account/admin-account.component';
@@ -26,9 +24,6 @@ const routes: Routes = [
   { path: 'order', component: OrderComponent },
   { path: 'promotion-add', component: PromotionAddComponent },
   { path: 'promotion-add/:id', component: PromotionAddComponent },
-  { path: 'blog', component: BlogComponent },
-  { path: 'blog-add', component: BlogAddComponent },
-  { path: 'blog-add/:id', component: BlogAddComponent },
   { path: 'product', component: ProductComponent },
   { path: 'product-add', component: ProductAddComponent },
   { path: 'product-add/:id', component: ProductAddComponent },
