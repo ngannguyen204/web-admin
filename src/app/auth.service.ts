@@ -3,10 +3,10 @@ import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { Router } from '@angular/router';
 import firebase from 'firebase/compat/app';
 import { forkJoin, Observable, from, of } from 'rxjs';
-import { switchMap, map, catchError, take } from 'rxjs/operators';
+import { switchMap, map, catchError, take, tap } from 'rxjs/operators';
 import { firebaseConfig } from './firebase.config';
 import { AngularFireDatabase } from '@angular/fire/compat/database';
-
+import { HttpClient } from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root'
@@ -16,11 +16,14 @@ export class AuthService {
 
   constructor(
     private afAuth: AngularFireAuth,
-    private router: Router,   
-  private db: AngularFireDatabase,
- 
+    private router: Router,
+    private db: AngularFireDatabase,
+    private http: HttpClient
   ) {
-    // Initialize Firebase if not already initialized
+    this.afAuth.onAuthStateChanged(user => {
+      console.log('Firebase auth state changed:', user);
+    });
+
     this.initializeFirebase();
   }
 
@@ -50,55 +53,47 @@ export class AuthService {
     );
   }
 
-
-
   forgotPassword(email: string): Observable<void> {
-    return from(this.afAuth.sendPasswordResetEmail(email));
-  }
-
- //checkEmailExists(email: string): Observable<boolean> {
-  //return from(this.afAuth.fetchSignInMethodsForEmail(email)).pipe(
-    //map(signInMethods => signInMethods.length > 0),
-    //catchError(() => of(false))
-  //);
-//}
-checkEmailExists(email: string): Observable<boolean> {
-  return of(true);
-}
-
-confirmCode(email: string, code: string): Observable<boolean> {
-  // Hardcoded verification code
-  const validCode = '123456';
-  if (code === validCode) {
-    // Generate a reset token (in a real app, use Firebase's reset token)
-    const resetToken = Math.random().toString(36).substring(2);
-    localStorage.setItem('resetToken', resetToken);
-    return of(true);
-  }
-  return of(false);
-}
-
-resetPassword(resetToken: string, newPassword: string): Observable<any> {
-  // Update in Firebase Auth
-  const authUpdate = from(this.afAuth.confirmPasswordReset(resetToken, newPassword));
-  
-  // Update in Realtime Database
-  const email = localStorage.getItem('email') || '';
-  const dbUpdate = this.db.list('admin', ref => 
-    ref.orderByChild('email').equalTo(email)
-  ).snapshotChanges().pipe(
-    take(1),
-    switchMap(snapshots => {
-      const updates = snapshots.map(snapshot => {
-        const key = snapshot.key;
-        return this.db.object(`admin/${key}/password`).set(newPassword);
-      });
-      return forkJoin(updates);
+  return from(this.afAuth.sendPasswordResetEmail(email)).pipe(
+    tap(() => {
+  console.log('Password reset email sent to:', email);
+      localStorage.setItem('resetEmail', email);
+    }),
+    catchError(error => {
+    
+      const errorMap: {[key: string]: string} = {
+        'auth/user-not-found': 'This email is not registered',
+        'auth/invalid-email': 'Invalid email format',
+        'auth/too-many-requests': 'Too many requests. Please try again later.'
+      };
+      
+      throw {
+        code: error.code,
+        message: errorMap[error.code] || 'Error sending reset email'
+      };
     })
   );
-
-  return forkJoin([authUpdate, dbUpdate]);
 }
+  checkEmailExists(email: string): Observable<boolean> {
+    console.log('Checking email in Firebase ', email);
+    return from(this.afAuth.fetchSignInMethodsForEmail(email)).pipe(
+      tap(methods => console.log('Login method:', methods)),
+      map(methods => methods.length > 0),
+      catchError(error => {
+        console.error('Error Firebase while checking email:', error);
+        return of(false);
+      })
+    );
+  }
+
+ confirmCode(email: string, code: string): Observable<boolean> {
+  // Hardcoded verification code 
+  const validCode = '123456';
+  return of(code === validCode);
+}
+
+ 
+
   async logout(): Promise<void> {
     try {
       await this.afAuth.signOut();
@@ -116,5 +111,4 @@ resetPassword(resetToken: string, newPassword: string): Observable<any> {
   getAdminToken(): string | null {
     return localStorage.getItem(this.adminTokenKey);
   }
-  
 }
