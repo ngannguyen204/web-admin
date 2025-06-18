@@ -1,11 +1,10 @@
-// product.component.ts
 import { Component, OnInit } from '@angular/core';
 import { Product } from '../class/product';
 import { ProductService } from '../product.service';
 
 @Component({
   selector: 'app-product',
-  standalone:false,
+  standalone: false,
   templateUrl: './product.component.html',
   styleUrls: ['./product.component.css']
 })
@@ -16,30 +15,22 @@ export class ProductComponent implements OnInit {
   isAdding = false;
   isEditing = false;
   showConfirmDelete = false;
-  selectedProduct: Product = { 
-    _id: '', 
-    product_name: '', 
-    description: '', 
-    price: 0, 
-    stock: 0, 
-    material: '', 
-    gender: [], 
-    face_shape: [], 
-    glasses_shape: '', 
-    created_at: new Date(), 
-    updated_at: new Date(), 
-    category: '', 
-    total_sold: 0, 
-    colour: '', 
-    product_image: '',
-    review_count: 0, 
-    average_rating: 0 
+
+  selectedProduct: Product = {
+    productid: '',
+    name: '',
+    description: '',
+    price: 0,
+    stock: 0,
+    image: '',
+    categoryid: '',
+    ratings: 0
   };
 
   products: Product[] = [];
   filteredProducts: Product[] = [];
 
-  constructor(private productService: ProductService) { }
+  constructor(private productService: ProductService) {}
 
   ngOnInit(): void {
     this.loadProducts();
@@ -48,26 +39,11 @@ export class ProductComponent implements OnInit {
   loadProducts(): void {
     this.productService.getProducts().subscribe({
       next: (products) => {
-        this.products = products.map(product => ({
-          ...product,
-          price: this.parseNumberDecimal(product.price)
-        }));
+        this.products = products;
         this.filteredProducts = [...this.products];
       },
       error: (err) => console.error('Failed to load products', err)
     });
-  }
-
-  parseNumberDecimal(value: any): number {
-    if (value && typeof value === 'object' && '$numberDecimal' in value) {
-      return parseFloat(value.$numberDecimal);
-    } else if (typeof value === 'number') {
-      return value;
-    } else if (typeof value === 'string') {
-      return parseFloat(value);
-    } else {
-      return 0;
-    }
   }
 
   get paginatedProducts(): Product[] {
@@ -75,27 +51,27 @@ export class ProductComponent implements OnInit {
     const endIndex = startIndex + this.itemsPerPage;
     return this.filteredProducts.slice(startIndex, endIndex);
   }
-
+  
   searchProducts(): void {
     const search = this.searchText?.toLowerCase().trim() || '';
-
     this.filteredProducts = this.products.filter(p => {
-      const productName = p.product_name.toLowerCase();
-      const productId = p._id.toString();
-      return productName.startsWith(search) || productId.startsWith(search);
+      const productName = p.name.toLowerCase();
+      const productId = p.productid.toString();
+      return productName.includes(search) || productId.includes(search);
     });
     this.currentPage = 1;
   }
 
-  hideDeletePopup(): void {
-    this.showConfirmDelete = false;
+  confirmDelete(product: Product): void {
+    this.showConfirmDelete = true;
+    this.selectedProduct = product;
   }
 
   deleteProduct(): void {
     if (this.selectedProduct) {
-      this.productService.deleteProduct(this.selectedProduct._id).subscribe({
+      this.productService.deleteProduct(this.selectedProduct.productid).subscribe({
         next: () => {
-          this.products = this.products.filter(p => p._id !== this.selectedProduct!._id);
+          this.products = this.products.filter(p => p.productid !== this.selectedProduct!.productid);
           this.filteredProducts = [...this.products];
           this.showConfirmDelete = false;
         },
@@ -104,9 +80,19 @@ export class ProductComponent implements OnInit {
     }
   }
 
-  confirmDelete(product: Product): void {
-    this.showConfirmDelete = true;
-    this.selectedProduct = product;
+  showAddForm(): void {
+    this.isAdding = true;
+    this.isEditing = false;
+    this.selectedProduct = {
+      productid: '',
+      name: '',
+      description: '',
+      price: 0,
+      stock: 0,
+      image: '',
+      categoryid: '',
+      ratings: 0
+    };
   }
 
   editProduct(product: Product): void {
@@ -115,68 +101,42 @@ export class ProductComponent implements OnInit {
     this.selectedProduct = { ...product };
   }
 
-  showAddForm(): void {
-    this.isAdding = true;
-    this.isEditing = false;
-    this.selectedProduct = { 
-      _id: '', 
-      product_name: '', 
-      description: '', 
-      price: 0, 
-      stock: 0, 
-      material: '', 
-      gender: [], 
-      face_shape: [], 
-      glasses_shape: '', 
-      created_at: new Date(), 
-      updated_at: new Date(), 
-      category: '', 
-      total_sold: 0, 
-      colour: '', 
-      product_image: '',
-      review_count: 0, 
-      average_rating: 0
-    };
+  addProduct(newProduct: Product): void {
+    if (this.isEditing && this.selectedProduct) {
+      this.productService.updateProduct(this.selectedProduct.productid, newProduct).subscribe({
+        next: () => {
+          this.loadProducts(); // reload sau khi cập nhật
+          this.isAdding = false;
+        },
+        error: (err) => {
+          console.error('Failed to update product:', err);
+        }
+      });
+    } else {
+      this.productService.createProduct(newProduct).subscribe({
+        next: () => {
+          this.loadProducts(); // reload sau khi tạo mới
+          this.isAdding = false;
+        },
+        error: (err) => {
+          console.error('Failed to create product:', err);
+        }
+      });
+    }
   }
 
-// product.component.ts
-addProduct(newProduct: Product): void {
-  if (this.isEditing && this.selectedProduct) {
-    console.log("Updating product with data:", newProduct); // Log dữ liệu cập nhật
-    this.productService.updateProduct(this.selectedProduct._id, newProduct).subscribe({
-      next: (updatedProduct) => {
-        const index = this.products.findIndex(p => p._id === updatedProduct._id);
-        if (index !== -1) {
-          this.products[index] = updatedProduct;
-          this.filteredProducts = [...this.products];
-        }
-        this.isAdding = false;
-      },
-      error: (err) => {
-        console.error("Failed to update product:", err); // Log lỗi chi tiết
-      }
-    });
-  } else {
-    console.log("Creating new product with data:", newProduct); // Log dữ liệu tạo mới
-    this.productService.createProduct(newProduct).subscribe({
-      next: (createdProduct) => {
-        this.products.push(createdProduct);
-        this.filteredProducts = [...this.products];
-        this.isAdding = false;
-      },
-      error: (err) => {
-        console.error("Failed to create product:", err); // Log lỗi chi tiết
-      }
-    });
-  }
-}
   hideForm(): void {
     this.isAdding = false;
     this.isEditing = false;
   }
 
+  hideDeletePopup(): void {
+  this.showConfirmDelete = false;
+  }
+
+
   get totalPages(): number {
-    return Math.ceil(this.products.length / this.itemsPerPage);
+    return Math.ceil(this.filteredProducts.length / this.itemsPerPage);
   }
 
   nextPage(): void {

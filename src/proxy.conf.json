@@ -1,18 +1,6 @@
 [
-    {
-        "context": ["/product", "/product/categories", "/product/category", "/product/top-selling", "/product/latest"],
-        "target": "http://localhost:8688",
-        "secure": true,
-        "changeOrigin": true,
-        "logLevel": "debug"
-    },
-    {
-        "context": ["/blog"],
-        "target": "http://localhost:8688",
-        "secure": true,
-        "changeOrigin": true,
-        "logLevel": "debug"
-    },
+    
+    
     {
         "context": ["/promotion"],
         "target": "http://localhost:8688",

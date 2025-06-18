@@ -1,39 +1,32 @@
 export class Customer {
-    _id: string 
-    first_name: string;
-    last_name: string;
-    email: string;
-    phone_number: string;
-    address: string;
-    password: string;
-    buying_points: number;
-    created_at: Date;
-    avatar?: string;
-    address_array: { first_name: string; last_name: string; phone_number: string; address: string }[];
+  userid: string;
+  name: string;
+  email: string;
+  password: string;
+  phonenumber: string;
+  gender: string;
+  profilepicture?: string;
+  defaultaddress?: {
+    street: string;
+    city: string;
+    country: string;
+  };
+  useractivity?: {
+    activityid: string;
+    action: string;
+    targetid: string;
+    timestamp: string;
+  }[];
 
-    constructor(
-        _id: string,
-        first_name: string,
-        last_name: string,
-        email: string,
-        phone_number: string,
-        address: string,
-        password: string,
-        buying_points: number = 0,
-        created_at?: Date,
-        avatar?: string,
-        address_array?: { first_name: string; last_name: string; phone_number: string; address: string }[]
-    ) {
-        this._id = _id;
-        this.first_name = first_name;
-        this.last_name = last_name;
-        this.email = email;
-        this.phone_number = phone_number;
-        this.address = address;
-        this.password = password;
-        this.buying_points = buying_points;
-        this.created_at = created_at || new Date();
-        this.avatar = avatar;
-        this.address_array = address_array || [];
-    }
+  constructor(init?: Partial<Customer>) {
+    this.userid = init?.userid || '';
+    this.name = init?.name || '';
+    this.email = init?.email || '';
+    this.password = init?.password || '';
+    this.phonenumber = init?.phonenumber || '';
+    this.gender = init?.gender || '';
+    this.profilepicture = init?.profilepicture;
+    this.defaultaddress = init?.defaultaddress;
+    this.useractivity = init?.useractivity || [];
+  }
 }

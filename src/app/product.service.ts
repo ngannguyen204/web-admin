@@ -1,73 +1,124 @@
 // product.service.ts
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http'; // Import HttpHeaders
+import {
+  getDatabase,
+  ref,
+  push,
+  update,
+  remove,
+  onValue,
+  get,
+  child,
+} from 'firebase/database';
 import { Observable } from 'rxjs';
 import { Product } from './class/product';
+import { FirebaseService } from './firebase.service';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class ProductService {
-  private apiUrl = 'http://localhost:8688/product'; // Đổi URL tùy theo backend của bạn
+  private basePath = 'products';
+  private db: any;
 
-  constructor(private http: HttpClient) { }
-
-  // Hàm lấy token từ localStorage
-
-  private getAuthHeaders(): HttpHeaders {
-    const token = localStorage.getItem('authToken');
-    console.log("Token from localStorage:", token);
-    if (token) {
-      return new HttpHeaders().set('Authorization', `Bearer ${token}`);
-    }
-    return new HttpHeaders();
+  constructor(private firebaseService: FirebaseService) {
+    this.db = this.firebaseService.getDb();
   }
 
   getProducts(): Observable<Product[]> {
-    return this.http.get<Product[]>(`${this.apiUrl}`);
-  }
-
-  getProductById(id: string): Observable<Product> {
-    return this.http.get<Product>(`${this.apiUrl}/${id}`);
-  }
-
-  getProductsByCategory(category: string): Observable<Product[]> {
-    return this.http.get<Product[]>(`${this.apiUrl}/category/${category}`);
-  }
-
-  getProductsByAttributes(gender: string, faceshape: string, material: string): Observable<Product[]> {
-    return this.http.get<Product[]>(`${this.apiUrl}/filter`, {
-      params: { gender, faceshape, material }
+    return new Observable<Product[]>(subscriber => {
+      const productsRef = ref(this.db, this.basePath);
+      onValue(
+        productsRef,
+        snapshot => {
+          const data = snapshot.val();
+          const products: Product[] = [];
+          if (data) {
+            Object.keys(data).forEach(key => {
+              products.push({ ...data[key], productid: key });
+            });
+          }
+          subscriber.next(products);
+        },
+        error => subscriber.error(error)
+      );
     });
   }
 
-  getTopSellingProducts(): Observable<Product[]> {
-    return this.http.get<Product[]>(`${this.apiUrl}/top-selling`);
+  getProductById(id: string): Observable<Product | null> {
+    return new Observable<Product | null>(subscriber => {
+      const productRef = ref(this.db, `${this.basePath}/${id}`);
+      onValue(
+        productRef,
+        snapshot => {
+          const product = snapshot.val();
+          subscriber.next(product ? { ...product, productid: id } : null);
+        },
+        error => subscriber.error(error)
+      );
+    });
   }
 
-  getLatestProducts(): Observable<Product[]> {
-    return this.http.get<Product[]>(`${this.apiUrl}/latest`);
+  createProduct(product: Product): Observable<void> {
+    const productsRef = ref(this.db, this.basePath);
+    return new Observable<void>((subscriber) => {
+      push(productsRef, product)
+        .then(() => {
+          subscriber.next();
+          subscriber.complete();
+        })
+        .catch((error) => subscriber.error(error));
+    });
   }
 
-  createProduct(product: Product): Observable<Product> {
-    const headers = this.getAuthHeaders(); // Lấy headers với token
-    return this.http.post<Product>(`${this.apiUrl}`, product, { headers });
+  updateProduct(productid: string, product: Product): Observable<void> {
+    const productRef = ref(this.db, `${this.basePath}/${productid}`);
+    return new Observable<void>((subscriber) => {
+      update(productRef, product)
+        .then(() => {
+          subscriber.next();
+          subscriber.complete();
+        })
+        .catch((error) => subscriber.error(error));
+    });
   }
 
-  updateProduct(id: string, product: Product): Observable<Product> {
-    const headers = this.getAuthHeaders(); // Lấy headers với token
-    console.log("Sending update request to:", `${this.apiUrl}/${id}`); // Log URL
-    console.log("Request headers:", headers); // Log headers
-    console.log("Request body:", product); // Log dữ liệu gửi lên server
-    return this.http.put<Product>(`${this.apiUrl}/${id}`, product, { headers });
-}
+  deleteProduct(productid: string): Observable<void> {
+    const productRef = ref(this.db, `${this.basePath}/${productid}`);
+    return new Observable<void>((subscriber) => {
+      remove(productRef)
+        .then(() => {
+          subscriber.next();
+          subscriber.complete();
+        })
+        .catch((error) => subscriber.error(error));
+    });
+  }
 
-  deleteProduct(id: string): Observable<void> {
-    const headers = this.getAuthHeaders(); // Lấy headers với token
-    return this.http.delete<void>(`${this.apiUrl}/${id}`, { headers });
+  getProductsByCategory(categoryid: string): Observable<Product[]> {
+    return new Observable<Product[]>(subscriber => {
+      this.getProducts().subscribe({
+        next: products => {
+          const filtered = products.filter(p => p.categoryid === categoryid);
+          subscriber.next(filtered);
+        },
+        error: err => subscriber.error(err)
+      });
+    });
   }
 
   getCategories(): Observable<string[]> {
-    return this.http.get<string[]>(`${this.apiUrl}/categories`);
+    return new Observable<string[]>(subscriber => {
+      const categoriesRef = ref(this.db, 'categories');
+      onValue(
+        categoriesRef,
+        snapshot => {
+          const data = snapshot.val();
+          const categories: string[] = data ? Object.values(data) : [];
+          subscriber.next(categories);
+        },
+        error => subscriber.error(error)
+      );
+    });
   }
 }

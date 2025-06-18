@@ -1,68 +1,68 @@
 <div class="promotion-container">
-    <!-- Tiêu đề quản lý chương trình giảm giá -->
-    <h2>Quản lý chương trình giảm giá</h2>
-    
-    <!-- Thanh tìm kiếm & Nút thêm chương trình -->
-    <div class="header-container">
-        <button class="add-button" (click)="showAddPromotionForm()">➕ Thêm</button>
-        <div class="search-bar">
-            <input 
-              type="text" 
-              [(ngModel)]="searchText" 
-              (input)="searchPromotions()" 
-              placeholder="🔍 Tìm kiếm chương trình..."
-            >
-        </div>
-    </div>
+  <!-- Title -->
+  <h2>Promotion Management</h2>
 
-    <table class="promotion-table">
-        <thead>
-            <tr>
-                <th>Mã</th>
-                <th>Code</th>
-                <th>Chi tiết</th>
-                <th>Bắt đầu</th>
-                <th>Kết thúc</th>
-                <th>Tình trạng</th>
-                <th>% Giảm</th>
-                <th>Giá trị tối thiểu</th>
-                <th>Thao tác</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr *ngFor="let promo of filteredPromotions()">
-                <td>{{ promo._id }}</td>
-                <td>{{ promo.promotion_code }}</td>
-                <td>{{ promo.promotion_title }}</td>
-                <td>{{ promo.start_date | date:'dd/MM/yyyy' }}</td>
-                <td>{{ promo.end_date | date:'dd/MM/yyyy' }}</td>
-                <td>{{ promo.promotion_status }}</td>
-                <td>{{ promo.discount_percent*100 | number }}</td>
-                <td>{{ promo.min_order_value | number }}</td>
-                               
-                <td>
-                    <button (click)="editPromotion(promo)">✏️</button>
-                    <button (click)="showConfirmDeleteDialog(promo._id)">🗑️</button>
-                  </td>
-            </tr>
-        </tbody>
-    </table>
-
-    <!-- Popup xác nhận xóa -->
-    <div *ngIf="isConfirmDialogVisible" class="confirm-dialog">
-        <div class="dialog-content">
-            <p>Bạn có chắc chắn muốn xóa chương trình giảm giá này?</p>
-            <div class="dialog-actions">
-                <button (click)="confirmDelete()" class="confirm-btn">✅ Xác nhận</button>
-                <button (click)="closeConfirmDialog()" class="cancel-btn">❌ Hủy</button>
-            </div>
-        </div>
+  <!-- Search bar and add button -->
+  <div class="header-container">
+    <button class="add-button" (click)="showAddPromotionForm()">➕ Add Promotion</button>
+    <div class="search-bar">
+      <input
+        type="text"
+        [(ngModel)]="searchText"
+        (input)="searchPromotions()"
+        placeholder="🔍 Search promotions..."
+      />
     </div>
+  </div>
 
-    <div class="pagination">
-        <button (click)="prevPage()" [disabled]="currentPage === 1">‹</button>
-        <span>Trang {{ currentPage }} / {{ totalPages }}</span>
-        <button (click)="nextPage()" [disabled]="currentPage >= totalPages">›</button>
+  <!-- Promotion table -->
+  <table class="promotion-table">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Code</th>
+        <th>Discount Type</th>
+        <th>Start</th>
+        <th>End</th>
+        <th>Used</th>
+        <th>Value</th>
+        <th>Category</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let promo of filteredPromotions()">
+        <td>{{ promo.promotionid }}</td>
+        <td>{{ promo.promotioncode }}</td>
+        <td>{{ promo.discounttype }}</td>
+        <td>{{ promo.validfrom | date: 'dd/MM/yyyy' }}</td>
+        <td>{{ promo.validuntil | date: 'dd/MM/yyyy' }}</td>
+        <td>{{ promo.isused ? 'Used' : 'Unused' }}</td>
+        <td>{{ promo.discountvalue }}</td>
+        <td>{{ promo.category }}</td>
+        <td>
+          <button (click)="editPromotion(promo)">✏️</button>
+          <button (click)="showConfirmDeleteDialog(promo.promotionid)">🗑️</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- Delete confirmation popup -->
+  <div *ngIf="isConfirmDialogVisible" class="confirm-dialog">
+    <div class="dialog-content">
+      <p>Are you sure you want to delete this promotion?</p>
+      <div class="dialog-actions">
+        <button (click)="confirmDelete()" class="confirm-btn">✅ Confirm</button>
+        <button (click)="closeConfirmDialog()" class="cancel-btn">❌ Cancel</button>
+      </div>
     </div>
+  </div>
+
+  <!-- Pagination -->
+  <div class="pagination">
+    <button (click)="prevPage()" [disabled]="currentPage === 1">‹</button>
+    <span>Page {{ currentPage }} / {{ totalPages }}</span>
+    <button (click)="nextPage()" [disabled]="currentPage >= totalPages">›</button>
+  </div>
 </div>
-

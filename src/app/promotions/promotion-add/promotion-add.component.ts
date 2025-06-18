@@ -16,7 +16,6 @@ export class PromotionAddComponent implements OnInit {
   showPopup = false;
   popupMessage = '';
 
-  // Biến tạm để lưu giá trị ngày tháng dưới dạng string
   startDateString: string = '';
   endDateString: string = '';
 
@@ -37,75 +36,65 @@ export class PromotionAddComponent implements OnInit {
     });
   }
 
-  // Hàm chuyển đổi ngày tháng sang định dạng yyyy-MM-dd
   formatDate(date: string | Date): string {
-    const dateObj = new Date(date);
-    const year = dateObj.getFullYear();
-    const month = ('0' + (dateObj.getMonth() + 1)).slice(-2); // Thêm số 0 phía trước nếu cần
-    const day = ('0' + dateObj.getDate()).slice(-2); // Thêm số 0 phía trước nếu cần
+    const d = new Date(date);
+    const year = d.getFullYear();
+    const month = ('0' + (d.getMonth() + 1)).slice(-2);
+    const day = ('0' + d.getDate()).slice(-2);
     return `${year}-${month}-${day}`;
   }
 
-  // Hàm tải dữ liệu của chương trình giảm giá khi chỉnh sửa
   loadPromotionData(id: string) {
     this.promotionService.getPromotionById(id).subscribe((promotion: Promotion) => {
-      // Chuyển đổi start_date và end_date sang định dạng yyyy-MM-dd để hiển thị trong form
-      this.startDateString = this.formatDate(promotion.start_date);
-      this.endDateString = this.formatDate(promotion.end_date);
+      this.startDateString = this.formatDate(promotion.validfrom);
+      this.endDateString = this.formatDate(promotion.validuntil);
       this.promotion = new Promotion(promotion);
     });
   }
 
-  // Hàm lưu chương trình giảm giá (Thêm mới hoặc Cập nhật)
   savePromotion() {
     if (!this.isFormValid()) {
-      this.showPopupMessage("Vui lòng điền đầy đủ thông tin!");
+      this.showPopupMessage("Please fill in all required fields.");
       return;
     }
 
-    // Chuyển đổi start_date và end_date từ chuỗi yyyy-MM-dd sang đối tượng Date
-    this.promotion.start_date = new Date(this.startDateString);
-    this.promotion.end_date = new Date(this.endDateString);
+    this.promotion.validfrom = new Date(this.startDateString);
+    this.promotion.validuntil = new Date(this.endDateString);
 
-    // Lấy token từ localStorage
     const token = localStorage.getItem('token');
     if (!token) {
-      this.showPopupMessage("Bạn cần đăng nhập để thực hiện thao tác này!");
+      this.showPopupMessage("You must be logged in to perform this action.");
       return;
     }
 
-    // Thêm token vào header
     const headers = new HttpHeaders({
       'Authorization': `Bearer ${token}`
     });
 
     if (this.isEditing) {
-      console.log('ID khuyến mãi được gửi từ client:', this.promotion._id);
-      // Gọi phương thức updatePromotion từ PromotionService với headers
-      this.promotionService.updatePromotion(this.promotion._id, this.promotion, headers).subscribe({
+      this.promotionService.updatePromotion(this.promotion.promotionid, this.promotion, headers).subscribe({
         next: () => {
-          this.showPopupMessage("Cập nhật chương trình giảm giá thành công!");
+          this.showPopupMessage("Promotion updated successfully!");
           setTimeout(() => {
             this.router.navigate(['/promotions']);
-          }, 2000);
+          }, 1500);
         },
         error: (error) => {
-          console.error("Lỗi khi cập nhật chương trình giảm giá:", error);
-          this.showPopupMessage("Không thể cập nhật chương trình giảm giá!");
+          console.error("Error updating promotion:", error);
+          this.showPopupMessage("Failed to update promotion.");
         }
       });
     } else {
-      // Gọi phương thức createPromotion từ PromotionService với headers
       this.promotionService.createPromotion(this.promotion, headers).subscribe({
         next: () => {
-          this.showPopupMessage("Thêm chương trình giảm giá thành công!");
+          this.showPopupMessage("Promotion created successfully!");
           setTimeout(() => {
             this.router.navigate(['/promotions']);
-          }, 2000);
+          }, 1500);
         },
         error: (error) => {
-          console.error("Lỗi khi thêm chương trình giảm giá:", error);
-          this.showPopupMessage("Không thể thêm chương trình giảm giá!");
+          console.error("Error creating promotion:", error);
+          this.showPopupMessage("Failed to create promotion.");
         }
       });
     }
@@ -117,12 +106,12 @@ export class PromotionAddComponent implements OnInit {
 
   isFormValid(): boolean {
     return (
-      this.promotion.promotion_code.trim() !== '' &&
-      this.promotion.promotion_title.trim() !== '' &&
+      this.promotion.promotioncode.trim() !== '' &&
+      this.promotion.discounttype.trim() !== '' &&
+      !isNaN(this.promotion.discountvalue) &&
+      this.promotion.category.trim() !== '' &&
       this.startDateString.trim() !== '' &&
-      this.endDateString.trim() !== '' &&
-      !isNaN(this.promotion.discount_percent) &&
-      !isNaN(this.promotion.min_order_value)
+      this.endDateString.trim() !== ''
     );
   }
 

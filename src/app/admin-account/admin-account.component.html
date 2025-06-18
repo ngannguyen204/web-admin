@@ -1,84 +1,82 @@
 <div *ngIf="!showConfirmDelete" class="admin-container">
-    <h2>Quản lý Tài Khoản</h2>
+  <h2>Account Management</h2>
 
-    <div class="toggle-container">
-        <button [class.active]="isAdminView" (click)="toggleView()">👤 Quản lý Admin</button>
-        <button [class.active]="!isAdminView" (click)="toggleView()">👥 Quản lý User</button>
+  <div class="toggle-container">
+    <button [class.active]="isAdminView" (click)="toggleView()">👤 Admin Accounts</button>
+    <button [class.active]="!isAdminView" (click)="toggleView()">👥 Customer Accounts</button>
+  </div>
+
+  <div class="header-container">
+    <button class="add-button" *ngIf="isAdminView" (click)="goToAddAccountPage()">➕ Add Admin</button>
+    <div class="search-bar">
+      <input type="text" [(ngModel)]="searchText" placeholder="🔍 Search..." />
     </div>
+  </div>
 
-    <div class="header-container">
-        <button class="add-button" *ngIf="isAdminView" (click)="goToAddAccountPage()">➕ Thêm tài khoản</button>
-        <div class="search-bar">
-            <input type="text" [(ngModel)]="searchText" placeholder="🔍 Tìm kiếm...">
-        </div>
-    </div>
+  <table>
+    <thead>
+      <tr *ngIf="isAdminView">
+        <th>ID</th>
+        <th>Username</th>
+        <th>Email</th>
+        <th>Last Login</th>
+        <th>Actions</th>
+      </tr>
+      <tr *ngIf="!isAdminView">
+        <th>ID</th>
+        <th>Name</th>
+        <th>Email</th>
+        <th>Phone Number</th>
+      </tr>
+    </thead>
 
-    <table>
-        <thead>
-            <tr *ngIf="isAdminView">
-                <th>Mã NV</th>
-                <th>Tên người dùng</th>
-                <th>Email</th>
-                <th>Lần đăng nhập cuối</th>
-                <th>Hành động</th>
-            </tr>
-            <tr *ngIf="!isAdminView">
-                <th>Mã KH</th>
-                <th>Họ tên</th>
-                <th>Email</th>
-                <th>Số điện thoại</th>
-                <th>Điểm tích lũy</th>
-            </tr>
-        </thead>
+    <tbody>
+      <!-- Admin Table -->
+      <ng-container *ngIf="isAdminView">
+        <tr *ngFor="let admin of getPagedAdmins()">
+          <td>{{ admin.adminid }}</td>
+          <td>
+            <input *ngIf="admin.isEditing" [(ngModel)]="admin.username" />
+            <span *ngIf="!admin.isEditing">{{ admin.username }}</span>
+          </td>
+          <td>
+            <input *ngIf="admin.isEditing" [(ngModel)]="admin.email" />
+            <span *ngIf="!admin.isEditing">{{ admin.email }}</span>
+          </td>
+          <td>{{ admin.lastlogin | date:'short' }}</td>
+          <td>
+            <button *ngIf="!admin.isEditing" (click)="editAdmin(admin)">✏️</button>
+            <button *ngIf="admin.isEditing" (click)="saveAdmin(admin)">💾</button>
+            <button (click)="showDeletePopup(admin)">🗑️</button>
+          </td>
+        </tr>
+      </ng-container>
 
-        <tbody>
-            <!-- Bảng Admin -->
-            <ng-container *ngIf="isAdminView">
-                <tr *ngFor="let admin of getPagedAdmins()">
-                    <td>{{ admin._id }}</td>
-                    <td>
-                        <input *ngIf="admin.isEditing" [(ngModel)]="admin.username">
-                        <span *ngIf="!admin.isEditing">{{ admin.username }}</span>
-                    </td>
-                    <td>
-                        <input *ngIf="admin.isEditing" [(ngModel)]="admin.email">
-                        <span *ngIf="!admin.isEditing">{{ admin.email }}</span>
-                    </td>
-                    <td>{{ admin.last_login | date:'short' }}</td>
-                    <td>
-                        <button *ngIf="!admin.isEditing" class="edit" (click)="editAdmin(admin)">✏️</button>
-                        <button *ngIf="admin.isEditing" class="save" (click)="saveAdmin(admin)">💾</button>
-                        <button class="delete" (click)="showDeletePopup(admin)">🗑️</button>
-                    </td>
-                </tr>
-            </ng-container>
+      <!-- Customer Table -->
+      <ng-container *ngIf="!isAdminView">
+        <tr *ngFor="let user of getPagedUsers()">
+          <td>{{ user.userid }}</td>
+          <td>{{ user.name }}</td>
+          <td>{{ user.email }}</td>
+          <td>{{ user.phonenumber }}</td>
+        </tr>
+      </ng-container>
+    </tbody>
+  </table>
 
-            <!-- Bảng User -->
-            <ng-container *ngIf="!isAdminView">
-                <tr *ngFor="let user of getPagedUsers()">
-                    <td>{{ user._id }}</td>
-                    <td>{{ user.first_name }} {{ user.last_name }}</td>
-                    <td>{{ user.email }}</td>
-                    <td>{{ user.phone_number }}</td>
-                    <td>{{ user.buying_points }}</td>
-                </tr>
-            </ng-container>
-        </tbody>
-    </table>
-
-    <!-- Thanh phân trang -->
-    <div class="pagination-container">
-        <button (click)="prevPage()" [disabled]="currentPage === 1">←</button>
-        <span>Trang {{ currentPage }} / {{ totalPages() }}</span>
-        <button (click)="nextPage()" [disabled]="currentPage === totalPages()">→</button>
-    </div>
+  <!-- Pagination -->
+  <div class="pagination-container">
+    <button (click)="prevPage()" [disabled]="currentPage === 1">←</button>
+    <span>Page {{ currentPage }} / {{ totalPages() }}</span>
+    <button (click)="nextPage()" [disabled]="currentPage === totalPages()">→</button>
+  </div>
 </div>
 
-<!-- Popup xác nhận xóa -->
+<!-- Delete Confirmation Popup -->
 <div *ngIf="showConfirmDelete" class="popup">
-    <p>Bạn có chắc chắn muốn xóa "{{ selectedItem?.username || selectedItem?.first_name }}" không?</p>
-    <div class="button-group">
-        <button (click)="deleteItem()">✅ Xác nhận</button>
-        <button (click)="hideDeletePopup()">❌ Hủy</button>
-    </div>
+  <p>Are you sure you want to delete "{{ selectedItem?.username || selectedItem?.name }}"?</p>
+  <div class="button-group">
+    <button (click)="deleteItem()">✅ Confirm</button>
+    <button (click)="hideDeletePopup()">❌ Cancel</button>
+  </div>
 </div>
