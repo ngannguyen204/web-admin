@@ -23,13 +23,13 @@ import { ConfirmCodeComponent } from './login/confirm-code/confirm-code.componen
 import { ResetPasswordComponent } from './login/reset-password/reset-password.component';
 
 import { QuillModule } from 'ngx-quill';
-import { AngularFireAuthModule } from '@angular/fire/compat/auth';
+import { LucideAngularModule, icons } from 'lucide-angular';
 
-// COMPAT Firebase version for AngularFireDatabase (NOT modular)
+// Firebase imports
+import { AngularFireAuthModule } from '@angular/fire/compat/auth';
 import { AngularFireModule } from '@angular/fire/compat';
 import { AngularFireDatabaseModule } from '@angular/fire/compat/database';
 import { AngularFireAnalyticsModule } from '@angular/fire/compat/analytics';
-
 import { firebaseConfig } from './firebase.config';
 import { initializeApp, provideFirebaseApp } from '@angular/fire/app';
 import { getAuth, provideAuth } from '@angular/fire/auth';
@@ -60,6 +60,7 @@ import { getFirestore, provideFirestore } from '@angular/fire/firestore';
     HttpClientModule,
     CommonModule,
     QuillModule.forRoot(),
+    LucideAngularModule.pick(icons),
 
     AngularFireModule.initializeApp(firebaseConfig),
     AngularFireDatabaseModule,
@@ -67,7 +68,16 @@ import { getFirestore, provideFirestore } from '@angular/fire/firestore';
     AngularFireAuthModule,
   ],
   providers: [
-    provideFirebaseApp(() => initializeApp({ projectId: "collabeyewears", appId: "1:996727863026:web:ad101d9df427462a6d026b", databaseURL: "https://collabeyewears-default-rtdb.firebaseio.com", storageBucket: "collabeyewears.firebasestorage.app", apiKey: "AIzaSyAei3EsRMBn1087E8Yu-A3c4sRzNKjZFJE", authDomain: "collabeyewears.firebaseapp.com", messagingSenderId: "996727863026", measurementId: "G-36D1DF3ND0" })),
+    provideFirebaseApp(() => initializeApp({
+      projectId: "collabeyewears",
+      appId: "1:996727863026:web:ad101d9df427462a6d026b",
+      databaseURL: "https://collabeyewears-default-rtdb.firebaseio.com",
+      storageBucket: "collabeyewears.firebasestorage.app",
+      apiKey: "AIzaSyAei3EsRMBn1087E8Yu-A3c4sRzNKjZFJE",
+      authDomain: "collabeyewears.firebaseapp.com",
+      messagingSenderId: "996727863026",
+      measurementId: "G-36D1DF3ND0"
+    })),
     provideAuth(() => getAuth()),
     provideFirestore(() => getFirestore())
   ],

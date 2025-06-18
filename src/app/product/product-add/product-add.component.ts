@@ -26,12 +26,23 @@ export class ProductAddComponent implements OnInit {
   isConfirmPopupVisible = false;
   isSuccessPopupVisible = false;
   successMessage = '';
-  categories: string[] = [];
+  categories: { [key: string]: string } = {};
 
   constructor(private productService: ProductService) {}
 
   ngOnInit(): void {
     this.loadCategories();
+    if (!this.product.productid) {
+    this.generateNextProductId();}
+  }
+
+  generateNextProductId(): void {
+  this.productService.getProducts().subscribe(products => {
+    const ids = products.map(p => parseInt(p.productid, 10)).filter(n => !isNaN(n));
+    const maxId = ids.length > 0 ? Math.max(...ids) : 0;
+    const nextId = (maxId + 1).toString().padStart(3, '0');
+    this.product.productid = nextId;
+  });
   }
 
   loadCategories(): void {
@@ -41,6 +52,24 @@ export class ProductAddComponent implements OnInit {
       },
       error: (err) => console.error('Failed to load categories', err)
     });
+  }
+
+  getCategoryKeys(): string[] {
+  return Object.keys(this.categories);
+}
+
+  onImageSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    if (input.files && input.files.length > 0) {
+      const file = input.files[0];
+      const reader = new FileReader();
+
+      reader.onload = () => {
+        this.product.image = reader.result as string; // Base64 string
+      };
+
+      reader.readAsDataURL(file); // Convert to base64
+    }
   }
 
   saveProduct(): void {
