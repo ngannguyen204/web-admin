@@ -107,18 +107,26 @@ export class ProductService {
     });
   }
 
-  getCategories(): Observable<string[]> {
-    return new Observable<string[]>(subscriber => {
-      const categoriesRef = ref(this.db, 'categories');
-      onValue(
-        categoriesRef,
-        snapshot => {
-          const data = snapshot.val();
-          const categories: string[] = data ? Object.values(data) : [];
-          subscriber.next(categories);
-        },
-        error => subscriber.error(error)
-      );
-    });
-  }
+  getCategories(): Observable<{ [key: string]: string }> {
+  const categoriesRef = ref(this.db, 'categories');
+  return new Observable(subscriber => {
+    onValue(
+      categoriesRef,
+      snapshot => {
+        const data = snapshot.val();
+        const categories: { [key: string]: string } = {};
+
+        if (data) {
+          Object.keys(data).forEach(key => {
+            categories[key] = data[key].name;
+          });
+        }
+
+        subscriber.next(categories);
+      },
+      error => subscriber.error(error)
+    );
+  });
+}
+
 }

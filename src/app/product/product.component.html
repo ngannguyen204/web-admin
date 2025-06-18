@@ -1,15 +1,17 @@
 <div class="product-container" *ngIf="!isAdding">
-  <h2>Product Management</h2>
-
   <div class="header-container">
-    <button class="add-button" (click)="showAddForm()">➕ Add Product</button>
-    <div class="search-bar">
-      <input 
-        type="text" 
-        [(ngModel)]="searchText" 
-        (input)="searchProducts()" 
-        placeholder="🔍 Search product..."
-      >
+    <h2>Product Management</h2>
+
+    <div class="header-actions">
+      <button class="add-button" (click)="showAddForm()">Add Product</button>
+      <div class="search-bar">
+        <input 
+          type="text" 
+          [(ngModel)]="searchText" 
+          (input)="searchProducts()" 
+          placeholder="Search product..."
+        >
+      </div>
     </div>
   </div>
 
@@ -30,10 +32,16 @@
         <td>{{ product.name }}</td>
         <td>{{ product.price | currency:'VND' }}</td>
         <td>{{ product.stock }}</td>
-        <td>{{ product.categoryid }}</td>
+        <td>{{ categoryMap[product.categoryid] || 'Unknown' }}</td>
         <td>
-          <button (click)="editProduct(product)">✏️</button>
-          <button (click)="confirmDelete(product)">🗑️</button>
+          <div class="action-buttons">
+            <button (click)="editProduct(product)">
+              <lucide-icon name="square-pen" strokeWidth="1.7" size="20"></lucide-icon>
+            </button>
+            <button class="delete" (click)="confirmDelete(product)">
+              <lucide-icon name="trash-2" strokeWidth="1.7" size="20"></lucide-icon>
+            </button>
+          </div>
         </td>
       </tr>
     </tbody>
@@ -58,7 +66,7 @@
 <div *ngIf="showConfirmDelete" class="popup">
   <p>Are you sure you want to delete product "{{ selectedProduct.name }}"?</p>
   <div class="button-group">
-    <button (click)="deleteProduct()">✅ Confirm</button>
-    <button (click)="hideDeletePopup()">❌ Cancel</button>
+    <button (click)="deleteProduct()">Delete</button>
+    <button (click)="hideDeletePopup()">Cancel</button>
   </div>
 </div>
