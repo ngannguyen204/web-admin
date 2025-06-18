@@ -23,6 +23,7 @@
     "angular-highcharts": "^17.0.1",
     "chart.js": "^4.4.8",
     "firebase": "^10.14.1",
+    "lucide-angular": "^0.517.0",
     "ngx-quill": "^27.0.1",
     "quill": "^2.0.3",
     "rxjs": "~7.8.0",

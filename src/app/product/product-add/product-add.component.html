@@ -1,82 +1,55 @@
 <div class="popup">
-  <h2>{{ product.productid ? 'Edit Product' : 'Add Product' }}</h2>
+  <div class="image-upload">
+    <div class="image-placeholder" (click)="fileInput.click()">
+      <img *ngIf="product.image" [src]="product.image" class="product-image" />
+      <div *ngIf="!product.image" class="no-image">+</div>
+    </div>
+    <span>Picture</span>
+    <input #fileInput type="file" (change)="onImageSelected($event)" accept="image/*" hidden />
+  </div>
 
   <form (ngSubmit)="saveProduct()" #productForm="ngForm">
-    <div class="form-group">
-      <div class="input-group full-width">
-        <label for="productid">Product ID</label>
-        <input id="productid" [value]="product.productid" type="text" disabled />
-      </div>
-    </div>
 
-    <div class="form-group">
+    <div class="form-grid">
       <div class="input-group">
         <label for="name">Product Name</label>
         <input id="name" [(ngModel)]="product.name" name="name" type="text" placeholder="Enter product name" required />
-        <div *ngIf="productForm.submitted && !product.name" class="error-message">
-          Product name is required.
-        </div>
+      </div>
+
+      <div class="input-group">
+        <label for="productid">Product ID</label>
+        <input id="productid" [(ngModel)]="product.productid" name="productid" type="text" disabled />
       </div>
 
       <div class="input-group">
         <label for="price">Price</label>
         <input id="price" [(ngModel)]="product.price" name="price" type="number" placeholder="Enter price" required />
-        <div *ngIf="productForm.submitted && !product.price" class="error-message">
-          Price is required.
-        </div>
       </div>
-    </div>
 
-    <div class="form-group">
       <div class="input-group">
         <label for="stock">Stock</label>
         <input id="stock" [(ngModel)]="product.stock" name="stock" type="number" placeholder="Enter stock quantity" required />
-        <div *ngIf="productForm.submitted && !product.stock" class="error-message">
-          Stock is required.
-        </div>
+      </div>
+
+      <div class="input-group">
+        <label for="description">Description</label>
+        <textarea id="description" [(ngModel)]="product.description" name="description" placeholder="Enter product description"></textarea>
       </div>
 
       <div class="input-group">
         <label for="categoryid">Category</label>
         <select id="categoryid" [(ngModel)]="product.categoryid" name="categoryid" required>
-          <option value="">Select a category</option>
-          <option *ngFor="let category of categories" [value]="category">{{ category }}</option>
+          <option [value]="''" disabled selected hidden>-- Select Category --</option>
+          <option *ngFor="let key of getCategoryKeys()" [value]="key">
+            {{ categories[key] }}
+          </option>
         </select>
-        <div *ngIf="productForm.submitted && !product.categoryid" class="error-message">
-          Category is required.
-        </div>
-      </div>
-    </div>
-
-    <div class="form-group">
-      <div class="input-group full-width">
-        <label for="description">Description</label>
-        <textarea id="description" [(ngModel)]="product.description" name="description" placeholder="Enter product description"></textarea>
       </div>
     </div>
 
     <div class="button-group">
-      <button class="save-btn" type="submit">{{ product.productid ? 'Update' : 'Save' }}</button>
+      <button class="save-btn" type="submit">Adjust</button>
       <button class="cancel-btn" type="button" (click)="close.emit()">Cancel</button>
     </div>
   </form>
-</div>
-
-<!-- Popup: Confirm or Success -->
-<div class="confirm-popup" *ngIf="isConfirmPopupVisible || isSuccessPopupVisible">
-  <div class="popup-content">
-    <p *ngIf="isConfirmPopupVisible">
-      Some fields are missing. Do you want to cancel or continue filling out the form?
-    </p>
-    <p *ngIf="isSuccessPopupVisible">{{ successMessage }}</p>
-
-    <div class="popup-buttons" *ngIf="isConfirmPopupVisible">
-      <button class="cancel-btn" (click)="cancelAction()">Cancel</button>
-      <button class="continue-btn" (click)="continueAction()">Continue</button>
-    </div>
-
-    <div class="popup-buttons" *ngIf="isSuccessPopupVisible">
-      <button class="close-btn" (click)="closeSuccessPopup()">Close</button>
-    </div>
-  </div>
 </div>

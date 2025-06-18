@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { PromotionService } from '../../promotion.service';
 import { Promotion } from '../../class/promotion';
 
@@ -22,7 +21,6 @@ export class PromotionAddComponent implements OnInit {
   constructor(
     private router: Router,
     private route: ActivatedRoute,
-    private http: HttpClient,
     private promotionService: PromotionService
   ) {}
 
@@ -45,10 +43,14 @@ export class PromotionAddComponent implements OnInit {
   }
 
   loadPromotionData(id: string) {
-    this.promotionService.getPromotionById(id).subscribe((promotion: Promotion) => {
-      this.startDateString = this.formatDate(promotion.validfrom);
-      this.endDateString = this.formatDate(promotion.validuntil);
-      this.promotion = new Promotion(promotion);
+    this.promotionService.getPromotionById(id).subscribe(promotion => {
+      if (promotion) {
+        this.startDateString = this.formatDate(promotion.validfrom);
+        this.endDateString = this.formatDate(promotion.validuntil);
+        this.promotion = new Promotion(promotion);
+      } else {
+        this.showPopupMessage("Promotion not found.");
+      }
     });
   }
 
@@ -61,41 +63,21 @@ export class PromotionAddComponent implements OnInit {
     this.promotion.validfrom = new Date(this.startDateString);
     this.promotion.validuntil = new Date(this.endDateString);
 
-    const token = localStorage.getItem('token');
-    if (!token) {
-      this.showPopupMessage("You must be logged in to perform this action.");
-      return;
-    }
-
-    const headers = new HttpHeaders({
-      'Authorization': `Bearer ${token}`
-    });
-
     if (this.isEditing) {
-      this.promotionService.updatePromotion(this.promotion.promotionid, this.promotion, headers).subscribe({
+      this.promotionService.updatePromotion(this.promotion.promotionid, this.promotion).subscribe({
         next: () => {
           this.showPopupMessage("Promotion updated successfully!");
-          setTimeout(() => {
-            this.router.navigate(['/promotions']);
-          }, 1500);
+          setTimeout(() => this.router.navigate(['/promotions']), 1500);
         },
-        error: (error) => {
-          console.error("Error updating promotion:", error);
-          this.showPopupMessage("Failed to update promotion.");
-        }
+        error: () => this.showPopupMessage("Failed to update promotion.")
       });
     } else {
-      this.promotionService.createPromotion(this.promotion, headers).subscribe({
+      this.promotionService.createPromotion(this.promotion).subscribe({
         next: () => {
           this.showPopupMessage("Promotion created successfully!");
-          setTimeout(() => {
-            this.router.navigate(['/promotions']);
-          }, 1500);
+          setTimeout(() => this.router.navigate(['/promotions']), 1500);
         },
-        error: (error) => {
-          console.error("Error creating promotion:", error);
-          this.showPopupMessage("Failed to create promotion.");
-        }
+        error: () => this.showPopupMessage("Failed to create promotion.")
       });
     }
   }

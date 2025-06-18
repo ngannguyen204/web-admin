@@ -22,6 +22,8 @@ import { ConfirmCodeComponent } from './login/confirm-code/confirm-code.componen
 import { ResetPasswordComponent } from './login/reset-password/reset-password.component';
 
 import { QuillModule } from 'ngx-quill';
+import { LucideAngularModule, icons } from 'lucide-angular';
+
 
 
 @NgModule({
@@ -49,6 +51,7 @@ import { QuillModule } from 'ngx-quill';
     HttpClientModule,
     CommonModule,
     QuillModule.forRoot(),
+    LucideAngularModule.pick(icons),
 
    
   ],

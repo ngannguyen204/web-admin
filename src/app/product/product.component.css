@@ -1,153 +1,217 @@
+body {
+  font-family: "Inter", sans-serif;
+  color: #1E1E1E;
+  margin: 0;
+  padding: 0;
+}
+
 .product-container {
-    width: 100%;
-    padding: 20px;
-    background: #f8f9fa;
-    border-radius: 10px;
+  width: 100%;
+  padding: 20px;
+  background: #f9fafb;
+  border-radius: 8px;
 }
 
 .header-container {
-    display: flex;
-    gap: 12px;
-    align-items: center; /* CÄƒn giá»¯a theo chiá»u dá»c */
-    margin-bottom: 15px; /* Khoáº£ng cÃ¡ch vá»›i báº£ng bÃªn dÆ°á»›i */
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+h2 {
+  font-size: 20px;
+  font-weight: 700;
+  color: #1E1E1E;
+  margin: 0;
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
 }
 
 .add-button {
-    background-color: #2d4b21; /* MÃ u xanh lÃ¡ Ä‘áº­m nhÆ° hÃ¬nh */
-    color: white;
-    padding: 10px 20px;
-    border-radius: 20px;
-    border: none;
-    font-size: 16px;
-    cursor: pointer;
-    font-weight: bold;
+  background-color: #1B4D3E;
+  color: #fff;
+  padding: 8px 20px;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 14px;
+  border: none;
+  cursor: pointer;
 }
 
 .add-button:hover {
-    background-color: #213819;
+  background-color: #153D31;
 }
 
 .search-bar {
-    display: flex;
-    align-items: center;
-    background: white;
-    border: 1px solid #ddd;
-    border-radius: 20px;
-    padding: 5px 10px;
+  display: flex;
+  align-items: center;
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 4px 12px;
 }
 
 .search-bar input {
-    border: none;
-    outline: none;
-    font-size: 14px;
-    padding: 5px;
-    width: 200px;
+  border: none;
+  outline: none;
+  font-size: 14px;
+  padding: 4px;
+  width: 200px;
 }
 
-
-/* bảng hiện ds sản phẩm */
 table {
-    width: 100%;
-    border-collapse: collapse;
-    background: white;
-    border-radius: 8px;
-    overflow: hidden;
-    box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  background: #fff;
+  border-radius: 8px;
+  overflow: hidden;
 }
 
 th, td {
-    padding: 12px;
-    border-bottom: 1px solid #ddd;
-    text-align: center;
-    font-size: 14px;
+  padding: 14px 12px;
+  text-align: left;
+  font-size: 14px;
+  border-bottom: 1px solid #eee;
 }
 
 th {
-    background-color: #f1f1f1;
-    font-weight: bold;
+  background-color: #f3f4f6;
+  font-weight: 600;
+  color: #4B5563;
+}
+
+tr:last-child td {
+  border-bottom: none;
 }
 
 tr:hover {
-    background-color: #f8f9fa;
+  background-color: #f9fafb;
 }
 
-/* Nút bấm */
+td:first-child {
+  color: #6B7280;
+  font-weight: 500;
+}
+
+td:nth-child(3) {
+  color: #1E1E1E;
+  font-weight: 500;
+}
+
 .action-buttons {
-    display: flex;
-    justify-content: center;
-    gap: 10px;
+  display: flex;
+  gap: 8px;
 }
 
 .action-buttons button {
-    padding: 8px 12px;
-    border: 1px solid #063B06;
-    border-radius: 5px;
-    font-weight: bold;
-    cursor: pointer;
-    transition: 0.3s;
-    font-size: 14px;
-}
-
-.action-buttons .edit {
-    background-color: #CCE5FF;
-    color: #004085;
-}
-
-.action-buttons .delete {
-    background-color: #F8D7DA;
-    color: #721C24;
+  background-color: #fff;
+  border: 1px solid #E5E7EB;
+  padding: 6px 8px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.2s;
 }
 
 .action-buttons button:hover {
-    opacity: 0.8;
+  background-color: #f3f4f6;
 }
 
+.action-buttons button.delete {
+  border-color: #F87171;
+  color: #B91C1C;
+}
 
+.action-buttons button.delete:hover {
+  background-color: #FECACA;
+}
 
-/* POPUP THÃŠM Sáº¢N PHáº¨M */
+/* Lucide icon chỉnh stroke nhỏ lại */
+.action-buttons lucide-icon svg {
+  stroke-width: 1.2;
+  width: 18px;
+  height: 18px;
+  
+}
+
 .popup {
-    position: fixed;
-    background: white;
-    padding: 20px;
-    box-shadow: 0px 0px 10px gray;
-    top: 30%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    border-radius: 10px;
-    z-index: 100;
-    align-items: center;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: #fff;
+  padding: 24px 32px;
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  z-index: 9999;
+  min-width: 300px;
 }
-.button-group {
-    display: flex;
-    justify-content: center;
-    gap: 10px; /* Khoảng cách giữa hai nút */
-    margin-top: 10px; /* Thêm khoảng cách với đoạn text phía trên */
-  }
 
-/* PHÂN TRANG */
+.popup p {
+  font-size: 18px;
+  font-weight: 500;
+  margin-bottom: 20px;
+}
+
+.button-group {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+}
+
+.button-group button {
+  padding: 8px 24px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  transition: background-color 0.2s ease;
+}
+
+.button-group button:first-child {
+  background-color: #e53935;
+  color: #fff;
+}
+
+.button-group button:first-child:hover {
+  background-color: #d32f2f;
+}
+
+.button-group button:last-child {
+  background-color: #f3f4f6;
+  color: #333;
+}
+
+.button-group button:last-child:hover {
+  background-color: #e5e7eb;
+}
+
 .pagination {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-top: 15px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 20px;
+  gap: 8px;
 }
 
 .pagination button {
-    background-color: #063B06;
-    color: white;
-    border: none;
-    padding: 8px 15px;
-    border-radius: 5px;
-    margin: 0 5px;
-    cursor: pointer;
-    transition: background 0.3s ease-in-out;
-}
-
-.pagination button:hover {
-    background-color: #052B05;
+  background-color: #1B4D3E;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 14px;
 }
 
 .pagination button:disabled {
-    background-color: #ccc;
-    cursor: not-allowed;
+  background-color: #E5E7EB;
+  color: #9CA3AF;
+  cursor: not-allowed;
 }

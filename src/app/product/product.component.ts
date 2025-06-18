@@ -11,7 +11,7 @@ import { ProductService } from '../product.service';
 export class ProductComponent implements OnInit {
   searchText: string = '';
   currentPage = 1;
-  itemsPerPage = 5;
+  itemsPerPage = 7;
   isAdding = false;
   isEditing = false;
   showConfirmDelete = false;
@@ -29,12 +29,24 @@ export class ProductComponent implements OnInit {
 
   products: Product[] = [];
   filteredProducts: Product[] = [];
+  categoryMap: { [key: string]: string } = {};
+
 
   constructor(private productService: ProductService) {}
 
   ngOnInit(): void {
-    this.loadProducts();
+    this.loadCategoriesAndProducts();
   }
+
+  loadCategoriesAndProducts(): void {
+  this.productService.getCategories().subscribe({
+    next: (categoryMap) => {
+      this.categoryMap = categoryMap;
+      this.loadProducts(); // Gọi sau khi đã có categoryMap
+    },
+    error: (err) => console.error('Failed to load categories', err)
+  });
+}
 
   loadProducts(): void {
     this.productService.getProducts().subscribe({
@@ -45,6 +57,15 @@ export class ProductComponent implements OnInit {
       error: (err) => console.error('Failed to load products', err)
     });
   }
+
+  loadCategories(): void {
+  this.productService.getCategories().subscribe({
+    next: (categoryMap) => {
+      this.categoryMap = categoryMap;
+    },
+    error: (err) => console.error('Failed to load categories', err)
+  });
+}
 
   get paginatedProducts(): Product[] {
     const startIndex = (this.currentPage - 1) * this.itemsPerPage;
