@@ -1,6 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from '../auth.service';
+import firebase from 'firebase/compat/app';
+import 'firebase/compat/database';
 
 @Component({
   selector: 'app-login',
@@ -8,72 +10,83 @@ import { AuthService } from '../auth.service';
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css']
 })
-export class LoginComponent implements OnInit {
+export class LoginComponent {
   email: string = '';
   password: string = '';
   rememberMe: boolean = false;
   passwordFieldType: string = 'password';
   showPopup: boolean = false;
   popupMessage: string = '';
+  isLoading: boolean = false;
 
   constructor(private router: Router, private authService: AuthService) {}
 
-  ngOnInit() {
-    // 👉 Fake login tự động khi vào trang login
-    this.fakeLogin();
+  async onSubmit() {
+    if (!this.email || !this.password) {
+      this.showPopupMessage('Please fill in all fields!');
+      return;
+    }
+
+    this.isLoading = true;
+    const normalizedEmail = this.email.toLowerCase().trim();
+
+    try {
+      
+      const userCredential = await this.authService.login(normalizedEmail, this.password);
+      
+      if (!userCredential?.user) {
+        throw new Error('Không thể lấy thông tin người dùng');
+      }
+
+      console.log('Firebase Auth User:', userCredential.user.email);
+
+      
+      if (this.rememberMe) {
+        localStorage.setItem('rememberedUser', JSON.stringify({
+          email: this.email,
+          rememberMe: true
+        }));
+      } else {
+        localStorage.removeItem('rememberedUser');
+      }
+
+      //  Save token
+      localStorage.setItem('token', await userCredential.user.getIdToken());
+
+      
+      this.router.navigate(['/dashboard']);
+
+    } catch (error: any) {
+      console.error('Login error:', error);
+      
+      let errorMessage = 'Login failed. Please try again';
+      if (error.code) {
+        switch (error.code) {
+          case 'auth/user-not-found':
+            errorMessage = 'Email does not exist';
+            break;
+          case 'auth/wrong-password':
+            errorMessage = 'Incorrect password';
+            break;
+          case 'auth/invalid-email':
+            errorMessage = 'Invalid email format';
+            break;
+          case 'auth/too-many-requests':
+            errorMessage = 'Too many attempts. Please try again later';
+            break;
+          default:
+            errorMessage = `System error: ${error.code || error.message}`;
+        }
+      }
+      
+      this.showPopupMessage(errorMessage);
+    } finally {
+      this.isLoading = false;
+    }
   }
 
   togglePassword() {
     this.passwordFieldType = this.passwordFieldType === 'password' ? 'text' : 'password';
-  }
-
-  onSubmit() {
-    // ✅ GỌI FAKE LOGIN THAY VÌ API
-    this.fakeLogin();
-
-    // ❌ CODE GỐC (comment lại, KHÔNG xoá)
-    /*
-    if (!this.email || !this.password) {
-      this.showPopupMessage('Vui lòng nhập đủ các trường!');
-      return;
-    }
-
-    this.authService.login(this.email, this.password).subscribe(
-      (response: any) => {
-        console.log('Đăng nhập thành công!', response);
-
-        // Lưu token vào localStorage
-        localStorage.setItem('token', response.token);
-
-        // Lưu thông tin người dùng vào localStorage
-        const userData = {
-          username: response.username || 'Admin',
-          role: response.role || 'Admin'
-        };
-        localStorage.setItem('userData', JSON.stringify(userData));
-
-        // Chuyển hướng đến trang dashboard
-        this.router.navigate(['/dashboard']);
-      },
-      (error) => {
-        console.error('Đăng nhập thất bại!', error);
-        this.showPopupMessage('Email hoặc mật khẩu không đúng!');
-      }
-    );
-    */
-  }
-
-  fakeLogin() {
-    const fakeToken = 'FAKE-TOKEN-FOR-DEV';
-    localStorage.setItem('token', fakeToken);
-
-    const userData = {
-      username: 'DevUser',
-      role: 'Admin'
-    };
-    localStorage.setItem('userData', JSON.stringify(userData));
-
-    this.router.navigate(['/dashboard']);
   }
 
   showPopupMessage(message: string) {
@@ -83,5 +96,14 @@ export class LoginComponent implements OnInit {
 
   closePopup() {
     this.showPopup = false;
+  }
+
+  ngOnInit() {
+    const rememberedUser = localStorage.getItem('rememberedUser');
+    if (rememberedUser) {
+      const user = JSON.parse(rememberedUser);
+      this.email = user.email;
+      this.rememberMe = user.rememberMe;
+    }
   }
 }
