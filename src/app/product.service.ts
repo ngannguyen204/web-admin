@@ -1,96 +1,124 @@
+// product.service.ts
 import { Injectable } from '@angular/core';
-import { AngularFireDatabase } from '@angular/fire/compat/database';
-import { Observable, from } from 'rxjs';
-import { map } from 'rxjs/operators';
+import {
+  getDatabase,
+  ref,
+  push,
+  update,
+  remove,
+  onValue,
+  get,
+  child,
+} from 'firebase/database';
+import { Observable } from 'rxjs';
 import { Product } from './class/product';
+import { FirebaseService } from './firebase.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ProductService {
   private basePath = 'products';
+  private db: any;
 
-constructor(private db: AngularFireDatabase) {
-  console.log('✅ AngularFireDatabase is', this.db);
-}
+  constructor(private firebaseService: FirebaseService) {
+    this.db = this.firebaseService.getDb();
+  }
 
   getProducts(): Observable<Product[]> {
-    console.log('📦 [ProductService] getProducts called');
-
-    return this.db
-      .list<Product>(this.basePath)
-      .snapshotChanges()
-      .pipe(
-        map(actions => {
-          const result = actions.map(a => {
-            const data = a.payload.val() as Product;
-            const key = a.key ?? '';
-            const merged: Product = { ...data, productid: key };
-            return merged;
-          });
-
-          console.log('✅ [ProductService] Loaded products:', result);
-          return result;
-        })
+    return new Observable<Product[]>(subscriber => {
+      const productsRef = ref(this.db, this.basePath);
+      onValue(
+        productsRef,
+        snapshot => {
+          const data = snapshot.val();
+          const products: Product[] = [];
+          if (data) {
+            Object.keys(data).forEach(key => {
+              products.push({ ...data[key], productid: key });
+            });
+          }
+          subscriber.next(products);
+        },
+        error => subscriber.error(error)
       );
+    });
   }
 
   getProductById(id: string): Observable<Product | null> {
-    return this.db
-      .object<Product>(`${this.basePath}/${id}`)
-      .valueChanges()
-      .pipe(
-        map(product => {
-          if (product) {
-            const result: Product = { ...product, productid: id };
-            console.log('🔍 [ProductService] Fetched product by ID:', result);
-            return result;
-          }
-          return null;
-        })
+    return new Observable<Product | null>(subscriber => {
+      const productRef = ref(this.db, `${this.basePath}/${id}`);
+      onValue(
+        productRef,
+        snapshot => {
+          const product = snapshot.val();
+          subscriber.next(product ? { ...product, productid: id } : null);
+        },
+        error => subscriber.error(error)
       );
+    });
   }
 
   createProduct(product: Product): Observable<void> {
-    const productsRef = this.db.list(this.basePath);
-    return from(productsRef.push(product)).pipe(map(() => {
-      console.log('🆕 [ProductService] Product created:', product);
-    }));
+    const productsRef = ref(this.db, this.basePath);
+    return new Observable<void>((subscriber) => {
+      push(productsRef, product)
+        .then(() => {
+          subscriber.next();
+          subscriber.complete();
+        })
+        .catch((error) => subscriber.error(error));
+    });
   }
 
   updateProduct(productid: string, product: Product): Observable<void> {
-    return from(
-      this.db.object(`${this.basePath}/${productid}`).update(product)
-    ).pipe(map(() => {
-      console.log('✏️ [ProductService] Product updated:', productid, product);
-    }));
+    const productRef = ref(this.db, `${this.basePath}/${productid}`);
+    return new Observable<void>((subscriber) => {
+      update(productRef, product)
+        .then(() => {
+          subscriber.next();
+          subscriber.complete();
+        })
+        .catch((error) => subscriber.error(error));
+    });
   }
 
   deleteProduct(productid: string): Observable<void> {
-    return from(
-      this.db.object(`${this.basePath}/${productid}`).remove()
-    ).pipe(map(() => {
-      console.log('🗑️ [ProductService] Product deleted:', productid);
-    }));
+    const productRef = ref(this.db, `${this.basePath}/${productid}`);
+    return new Observable<void>((subscriber) => {
+      remove(productRef)
+        .then(() => {
+          subscriber.next();
+          subscriber.complete();
+        })
+        .catch((error) => subscriber.error(error));
+    });
   }
 
   getProductsByCategory(categoryid: string): Observable<Product[]> {
-    return this.getProducts().pipe(
-      map(products => {
-        const filtered = products.filter(p => p.categoryid === categoryid);
-        console.log(`📂 [ProductService] Products in category ${categoryid}:`, filtered);
-        return filtered;
-      })
-    );
+    return new Observable<Product[]>(subscriber => {
+      this.getProducts().subscribe({
+        next: products => {
+          const filtered = products.filter(p => p.categoryid === categoryid);
+          subscriber.next(filtered);
+        },
+        error: err => subscriber.error(err)
+      });
+    });
   }
 
   getCategories(): Observable<string[]> {
-    return this.db
-      .list<string>('categories')
-      .valueChanges()
-      .pipe(map(categories => {
-        console.log('📋 [ProductService] Categories:', categories);
-        return categories || [];
-      }));
+    return new Observable<string[]>(subscriber => {
+      const categoriesRef = ref(this.db, 'categories');
+      onValue(
+        categoriesRef,
+        snapshot => {
+          const data = snapshot.val();
+          const categories: string[] = data ? Object.values(data) : [];
+          subscriber.next(categories);
+        },
+        error => subscriber.error(error)
+      );
+    });
   }
 }

@@ -23,12 +23,6 @@ import { ResetPasswordComponent } from './login/reset-password/reset-password.co
 
 import { QuillModule } from 'ngx-quill';
 
-// 👇 COMPAT Firebase version for AngularFireDatabase (NOT modular)
-import { AngularFireModule } from '@angular/fire/compat';
-import { AngularFireDatabaseModule } from '@angular/fire/compat/database';
-import { AngularFireAnalyticsModule } from '@angular/fire/compat/analytics';
-
-import { firebaseConfig } from './firebase.config';
 
 @NgModule({
   declarations: [
@@ -56,9 +50,7 @@ import { firebaseConfig } from './firebase.config';
     CommonModule,
     QuillModule.forRoot(),
 
-    AngularFireModule.initializeApp(firebaseConfig),
-    AngularFireDatabaseModule,
-    AngularFireAnalyticsModule,
+   
   ],
   providers: [],
   bootstrap: [AppComponent],

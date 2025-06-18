@@ -51,7 +51,7 @@ export class ProductComponent implements OnInit {
     const endIndex = startIndex + this.itemsPerPage;
     return this.filteredProducts.slice(startIndex, endIndex);
   }
-
+  
   searchProducts(): void {
     const search = this.searchText?.toLowerCase().trim() || '';
     this.filteredProducts = this.products.filter(p => {
