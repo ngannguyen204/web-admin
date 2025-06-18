@@ -1,9 +1,10 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from '../../auth.service';
+
 @Component({
   selector: 'app-reset-password',
-  standalone: false,
+  standalone:false,
   templateUrl: './reset-password.component.html',
   styleUrls: ['./reset-password.component.css']
 })
@@ -12,45 +13,46 @@ export class ResetPasswordComponent {
   newPassword: string = '';
   confirmPassword: string = '';
   rememberMe: boolean = false;
-  passwordFieldType: string = 'password';
   showPopup: boolean = false;
   popupMessage: string = '';
+  passwordFieldType: string = 'password';
 
   constructor(private router: Router, private authService: AuthService) {}
 
-  togglePassword() {
-    this.passwordFieldType = this.passwordFieldType === 'password' ? 'text' : 'password';
-  }
-
   onResetPassword() {
     if (!this.newPassword || !this.confirmPassword) {
-      this.showPopupMessage('Vui lòng nhập đủ các trường!');
+      this.showPopupMessage('Please fill in all fields!');
       return;
     }
 
     if (this.newPassword !== this.confirmPassword) {
-      this.showPopupMessage('Mật khẩu xác nhận không khớp!');
+      this.showPopupMessage('Passwords do not match!');
       return;
     }
 
     const resetToken = localStorage.getItem('resetToken');
     if (!resetToken) {
-      this.showPopupMessage('Token không hợp lệ hoặc đã hết hạn!');
+      this.showPopupMessage('Invalid or expired token!');
       return;
     }
 
-    this.authService.resetPassword(resetToken, this.newPassword).subscribe(
-      (response: any) => {
-        console.log('Reset mật khẩu thành công!', response);
-        this.showPopupMessage('Reset mật khẩu thành công!');
+    this.authService.resetPassword(resetToken, this.newPassword).subscribe({
+      next: () => {
+        this.showPopupMessage('Password reset successfully!');
         localStorage.removeItem('resetToken');
-        this.router.navigate(['/login']);
+        setTimeout(() => {
+          this.router.navigate(['/login']);
+        }, 1500);
       },
-      (error) => {
-        console.error('Reset mật khẩu thất bại!', error);
-        this.showPopupMessage('Token không hợp lệ hoặc đã hết hạn!');
+      error: (error) => {
+        console.error('Password reset failed:', error);
+        this.showPopupMessage('Failed to reset password. Please try again!');
       }
-    );
+    });
+  }
+
+  togglePassword() {
+    this.passwordFieldType = this.passwordFieldType === 'password' ? 'text' : 'password';
   }
 
   showPopupMessage(message: string) {

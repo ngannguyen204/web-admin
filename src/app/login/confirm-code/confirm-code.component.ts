@@ -1,14 +1,15 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from '../../auth.service';
+
 @Component({
   selector: 'app-confirm-code',
-  standalone: false,
+  standalone:false,
   templateUrl: './confirm-code.component.html',
   styleUrls: ['./confirm-code.component.css']
 })
 export class ConfirmCodeComponent {
-  email: string = '';
+  email: string = localStorage.getItem('email') || '';
   code: string = '';
   rememberMe: boolean = false;
   codeFieldType: string = 'password';
@@ -22,18 +23,27 @@ export class ConfirmCodeComponent {
   }
 
   onConfirmCode() {
-    this.authService.confirmCode(this.email, this.code).subscribe(
-      (response: any) => {
-        console.log('Xác nhận mã thành công!', response);
-        localStorage.setItem('resetToken', response.resetToken);
-        this.showPopupMessage('Xác nhận mã thành công!');
-        this.router.navigate(['/reset-password']);
+    if (!this.code.trim()) {
+      this.showPopupMessage('Please enter the verification code!');
+      return;
+    }
+
+    this.authService.confirmCode(this.email, this.code).subscribe({
+      next: (isValid) => {
+        if (isValid) {
+          this.showPopupMessage('Code verified successfully!');
+          setTimeout(() => {
+            this.router.navigate(['/reset-password']);
+          }, 1500);
+        } else {
+          this.showPopupMessage('Invalid verification code!');
+        }
       },
-      (error) => {
-        console.error('Xác nhận mã thất bại!', error);
-        this.showPopupMessage('Mã xác nhận không đúng!');
+      error: (err) => {
+        console.error('Verification error:', err);
+        this.showPopupMessage('Error verifying code. Please try again!');
       }
-    );
+    });
   }
 
   showPopupMessage(message: string) {

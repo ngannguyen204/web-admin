@@ -1,25 +1,40 @@
 <div class="confirm-code-container">
-    <!-- Phần logo bên trái -->
+    <!-- Left logo section -->
     <div class="logo-section">
-      <img src="assets/image/logo (2).png" class="logo" />    </div>
+      <img src="assets/image/logo (2).png" class="logo" />
+    </div>
   
-    <!-- Phần form xác nhận code bên phải -->
+    <!-- Right form section -->
     <div class="form-section">
       <form (submit)="onConfirmCode()">
-        <h2 class="title">Đăng nhập</h2>
-        <p class="subtitle">Vui lòng nhập code được gửi qua email</p>
+        <h2 class="title">Verification Code</h2>
+        <p class="subtitle">Please enter the code sent to your email</p>
   
-        <!-- Ô nhập tên đăng nhập -->
+        <!-- Email input -->
         <div class="input-group">
           <label for="email">Email</label>
-          <input type="email" id="email" [(ngModel)]="email" name="email" required />
+          <input 
+            type="email" 
+            id="email" 
+            [(ngModel)]="email" 
+            name="email" 
+            required 
+            readonly
+          />
         </div>
   
-        <!-- Ô nhập code -->
+        <!-- Code input -->
         <div class="input-group">
-          <label for="code">Code</label>
+          <label for="code">Verification Code</label>
           <div class="password-wrapper">
-            <input [type]="codeFieldType" id="code" [(ngModel)]="code" name="code" required />
+            <input 
+              [type]="codeFieldType" 
+              id="code" 
+              [(ngModel)]="code" 
+              name="code" 
+              required
+              placeholder="Enter 6-digit code"
+            />
             <span class="toggle-password" (click)="toggleCodeVisibility()">
               <i class="material-icons">
                 {{ codeFieldType === 'password' ? 'visibility' : 'visibility_off' }}
@@ -28,25 +43,25 @@
           </div>
         </div>
   
-        <!-- Ghi nhớ tài khoản & Quên mật khẩu -->
+        <!-- Options section -->
         <div class="options">
           <label>
             <input type="checkbox" [(ngModel)]="rememberMe" name="rememberMe" />
-            Lưu tài khoản
+            Remember me
           </label>
-          <a routerLink="/forgot-password" class="forgot-password">Quên mật khẩu?</a>
+          <a routerLink="/forgot-password" class="forgot-password">Forgot password?</a>
         </div>
   
-        <!-- Nút xác nhận -->
-        <button type="submit" class="confirm-button">Xác nhận</button>
+        <!-- Confirm button -->
+        <button type="submit" class="confirm-button">Verify Code</button>
       </form>
     </div>
   </div>
   
   <!-- Popup HTML -->
-<div class="popup-overlay" *ngIf="showPopup">
-  <div class="popup-content">
-    <p>{{ popupMessage }}</p>
-    <button (click)="closePopup()">Đóng</button>
+  <div class="popup-overlay" *ngIf="showPopup">
+    <div class="popup-content">
+      <p>{{ popupMessage }}</p>
+      <button (click)="closePopup()">Close</button>
+    </div>
   </div>
-</div>

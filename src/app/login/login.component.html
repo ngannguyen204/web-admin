@@ -7,8 +7,8 @@
     <!-- Phần form đăng nhập bên phải -->
     <div class="form-section">
       <form (submit)="onSubmit()">
-        <h2 class="title">Đăng nhập</h2>
-        <p class="subtitle">Vui lòng sử dụng đúng mã nhân viên được cung cấp cho bạn</p>
+        <h2 class="title">Login</h2>
+        <p class="subtitle">Please login by your account</p>
   
         <!-- Ô nhập tên đăng nhập -->
         <div class="input-group">
@@ -18,7 +18,7 @@
   
         <!-- Ô nhập mật khẩu -->
         <div class="input-group">
-          <label for="password">Mật khẩu</label>
+          <label for="password">Password</label>
           <div class="password-wrapper">
             <input [type]="passwordFieldType" id="password" [(ngModel)]="password" name="password" required />
             <span class="toggle-password" (click)="togglePassword()">
@@ -33,13 +33,13 @@
         <div class="options">
           <label>
             <input type="checkbox" [(ngModel)]="rememberMe" name="rememberMe" />
-            Lưu tài khoản
+            Save infor
           </label>
-          <a routerLink="/forgot-password" class="forgot-password" (click)="$event.preventDefault()">Quên mật khẩu?</a>
+          <a routerLink="/forgot-password" class="forgot-password" (click)="$event.preventDefault()">Forgot password</a>
         </div>
   
         <!-- Nút đăng nhập -->
-        <button type="submit" class="login-button">Đăng nhập</button>
+        <button type="submit" class="login-button">Login</button>
       </form>
     </div>
   </div>
@@ -48,6 +48,6 @@
 <div class="popup-overlay" *ngIf="showPopup">
   <div class="popup-content">
     <p>{{ popupMessage }}</p>
-    <button (click)="closePopup()">Đóng</button>
+    <button (click)="closePopup()">Close</button>
   </div>
 </div>
