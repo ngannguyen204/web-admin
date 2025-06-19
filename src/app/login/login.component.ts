@@ -1,8 +1,7 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from '../auth.service';
-import firebase from 'firebase/compat/app';
-import 'firebase/compat/database';
+import { take } from 'rxjs/operators';
 
 @Component({
   selector: 'app-login',
@@ -21,70 +20,60 @@ export class LoginComponent {
 
   constructor(private router: Router, private authService: AuthService) {}
 
-  async onSubmit() {
-    if (!this.email || !this.password) {
-      this.showPopupMessage('Please fill in all fields!');
-      return;
-    }
-
-    this.isLoading = true;
-    const normalizedEmail = this.email.toLowerCase().trim();
-
-    try {
-      
-      const userCredential = await this.authService.login(normalizedEmail, this.password);
-      
-      if (!userCredential?.user) {
-        throw new Error('Không thể lấy thông tin người dùng');
-      }
-
-      console.log('Firebase Auth User:', userCredential.user.email);
-
-      
-      if (this.rememberMe) {
-        localStorage.setItem('rememberedUser', JSON.stringify({
-          email: this.email,
-          rememberMe: true
-        }));
-      } else {
-        localStorage.removeItem('rememberedUser');
-      }
-
-      //  Save token
-      localStorage.setItem('token', await userCredential.user.getIdToken());
-
-      
-      this.router.navigate(['/dashboard']);
-
-    } catch (error: any) {
-      console.error('Login error:', error);
-      
-      let errorMessage = 'Login failed. Please try again';
-      if (error.code) {
-        switch (error.code) {
-          case 'auth/user-not-found':
-            errorMessage = 'Email does not exist';
-            break;
-          case 'auth/wrong-password':
-            errorMessage = 'Incorrect password';
-            break;
-          case 'auth/invalid-email':
-            errorMessage = 'Invalid email format';
-            break;
-          case 'auth/too-many-requests':
-            errorMessage = 'Too many attempts. Please try again later';
-            break;
-          default:
-            errorMessage = `System error: ${error.code || error.message}`;
-        }
-      }
-      
-      this.showPopupMessage(errorMessage);
-    } finally {
-      this.isLoading = false;
-    }
+async onSubmit() {
+  if (!this.email || !this.password) {
+    this.showPopupMessage('Please fill in all fields!');
+    return;
   }
 
+  this.isLoading = true;
+  const normalizedEmail = this.email.toLowerCase().trim();
+
+  try {
+    const userCredential = await this.authService.login(normalizedEmail, this.password);
+    
+    // Kiểm tra localStorage để chắc chắn
+    const adminData = localStorage.getItem('adminAuth');
+    if (!adminData) {
+      throw new Error('Admin session not established');
+    }
+
+    if (this.rememberMe) {
+      localStorage.setItem('rememberedUser', JSON.stringify({
+        email: this.email,
+        rememberMe: true
+      }));
+    }
+
+    this.router.navigate(['/dashboard']);
+
+  } catch (error: any) {
+    console.error('Login error:', error);
+    this.handleLoginError(error);
+  } finally {
+    this.isLoading = false;
+  }
+}
+
+  
+
+  private handleLoginError(error: any) {
+    let errorMessage = 'Login failed. Please try again';
+    
+    const errorMap: {[key: string]: string} = {
+      'auth/user-not-found': 'Email does not exist',
+      'auth/wrong-password': 'Incorrect password',
+      'auth/invalid-email': 'Invalid email format',
+      'auth/too-many-requests': 'Too many attempts. Please try again later',
+      'auth/user-disabled': 'This account has been disabled',
+      'PERMISSION_DENIED': 'You do not have permission to access the database. Please contact administrator.'
+    };
+    
+    errorMessage = errorMap[error.code] || error.message || errorMessage;
+    this.showPopupMessage(errorMessage);
+  }
+
+  
   togglePassword() {
     this.passwordFieldType = this.passwordFieldType === 'password' ? 'text' : 'password';
   }
