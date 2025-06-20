@@ -1,9 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import { Admin } from '../class/admin';
 import { Customer } from '../class/customer';
 import { AdminAccountService } from '../admin-account.service';
-import { HttpHeaders } from '@angular/common/http';
 
 @Component({
   selector: 'app-admin-account',
@@ -11,7 +10,7 @@ import { HttpHeaders } from '@angular/common/http';
   templateUrl: './admin-account.component.html',
   styleUrls: ['./admin-account.component.css']
 })
-export class AdminAccountComponent implements OnInit {
+export class AdminAccountComponent implements OnInit, OnDestroy {
   isAdminView: boolean = true;
   searchText: string = '';
   showConfirmDelete: boolean = false;
@@ -35,7 +34,7 @@ export class AdminAccountComponent implements OnInit {
       if (!this.isAdminView) {
         this.loadCustomers();
       }
-    }, 10000); 
+    }, 10000);
   }
 
   ngOnDestroy(): void {
@@ -56,19 +55,9 @@ export class AdminAccountComponent implements OnInit {
   }
 
   loadCustomers(): void {
-    const token = localStorage.getItem('authToken');
-    if (!token) {
-      console.error('Token not found');
-      return;
-    }
-
-    const headers = new HttpHeaders({
-      'Authorization': `Bearer ${token}`
-    });
-
-    this.adminAccountService.getCustomers(headers).subscribe(
-      (response: { success: boolean, customers: Customer[] }) => {
-        this.userList = response.customers || [];
+    this.adminAccountService.getCustomers().subscribe(
+      (customers: Customer[]) => {
+        this.userList = customers;
       },
       (error) => {
         console.error('Error loading customers:', error);
@@ -108,8 +97,7 @@ export class AdminAccountComponent implements OnInit {
 
   getPagedUsers(): Customer[] {
     const start = (this.currentPage - 1) * this.itemsPerPage;
-    const filteredUsers = this.getFilteredUsers();
-    return filteredUsers.slice(start, start + this.itemsPerPage);
+    return this.getFilteredUsers().slice(start, start + this.itemsPerPage);
   }
 
   totalPages(): number {
@@ -145,8 +133,8 @@ export class AdminAccountComponent implements OnInit {
   saveAdmin(admin: Admin): void {
     admin.isEditing = false;
     this.adminAccountService.updateAdmin(admin.adminid, admin).subscribe(
-      (updatedAdmin: Admin) => {
-        console.log('Admin updated:', updatedAdmin);
+      () => {
+        console.log('Admin updated');
       },
       (error) => {
         console.error('Error updating admin:', error);
@@ -167,7 +155,9 @@ export class AdminAccountComponent implements OnInit {
           }
         );
       } else {
-        // Handle customer deletion if needed
+        // Firebase customer deletion (optional)
+        console.warn('Customer deletion not implemented.');
+        this.hideDeletePopup();
       }
     }
   }

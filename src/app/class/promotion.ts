@@ -3,7 +3,7 @@ export class Promotion {
   promotioncode: string = '';
   discounttype: string = ''; // e.g., 'percentage' or 'fixed'
   discountvalue: number = 0;
-  category: string = '';
+  categoryid: string = '';
   userid: string = '';
   isused: boolean = false;
   validfrom: Date = new Date();
