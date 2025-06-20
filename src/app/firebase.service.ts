@@ -1,15 +1,27 @@
 // firebase.service.ts
 import { Injectable } from '@angular/core';
-import { initializeApp } from 'firebase/app';
-import { getDatabase } from 'firebase/database';
+import { initializeApp, FirebaseApp } from 'firebase/app';
+import { getDatabase, Database } from 'firebase/database';
+import { getAuth, Auth } from 'firebase/auth';
 import { firebaseConfig } from './firebase.config';
-
-const app = initializeApp(firebaseConfig);
-const db = getDatabase(app);
 
 @Injectable({ providedIn: 'root' })
 export class FirebaseService {
-  getDb() {
-    return db;
+  private app: FirebaseApp;
+  private db: Database;
+  private auth: Auth;
+
+  constructor() {
+    this.app = initializeApp(firebaseConfig);
+    this.db = getDatabase(this.app);
+    this.auth = getAuth(this.app);
+  }
+
+  getDb(): Database {
+    return this.db;
+  }
+
+  getAuth(): Auth {
+    return this.auth;
   }
 }

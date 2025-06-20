@@ -1,47 +1,78 @@
 <div class="promotion-add-container">
-  <h2>{{ isEditing ? "Edit" : "Add" }} Promotion</h2>
+  <h2>Promotion Management</h2>
   <form (ngSubmit)="savePromotion()">
     <div class="form-grid">
+      <!-- ID - Auto generated and disabled when adding -->
       <div class="form-group">
-        <label>Promotion Code</label>
+        <label>ID</label>
+        <input type="text" [(ngModel)]="promotion.promotionid" name="promotionid" [disabled]="!isEditing" placeholder="Enter promotion ID">
+      </div>
+
+      <!-- Code -->
+      <div class="form-group">
+        <label>CODE</label>
         <input type="text" [(ngModel)]="promotion.promotioncode" name="promotioncode" placeholder="Enter promotion code">
       </div>
-      <div class="form-group">
-        <label>Discount Value</label>
-        <input type="number" [(ngModel)]="promotion.discountvalue" name="discountvalue" placeholder="Enter discount value">
-      </div>
+
+      <!-- Discount Type -->
       <div class="form-group">
         <label>Discount Type</label>
-        <select [(ngModel)]="promotion.discounttype" name="discounttype">
+        <select [(ngModel)]="promotion.discounttype" name="discounttype" required>
+          <option value="" disabled selected hidden>-- Select Type --</option>
           <option value="percentage">Percentage</option>
           <option value="fixed">Fixed</option>
         </select>
       </div>
+      <!-- Is Used - display readable value but bind boolean -->
+      <div class="form-group">
+        <label>Is used</label>
+        <input type="text" [value]="promotion.isused ? 'Used' : 'Unused'" disabled>
+      </div>
+
+      <!-- Start Date -->
+      <div class="form-group">
+        <label>Start</label>
+        <input type="date" [(ngModel)]="startDateString" name="validfrom" placeholder="Start day">
+      </div>
+
+      <!-- End Date -->
+      <div class="form-group">
+        <label>End</label>
+        <input type="date" [(ngModel)]="endDateString" name="validuntil" placeholder="End day">
+      </div>
+
+      <!-- Value -->
+      <div class="form-group">
+        <label>Value</label>
+        <input type="number" [(ngModel)]="promotion.discountvalue" name="discountvalue" placeholder="Enter Value">
+      </div>
+
+      <!-- Category -->
       <div class="form-group">
         <label>Category</label>
-        <input type="text" [(ngModel)]="promotion.category" name="category" placeholder="Enter applicable category">
-      </div>
-      <div class="form-group">
-        <label>Valid From</label>
-        <input type="date" [(ngModel)]="startDateString" name="validfrom">
-      </div>
-      <div class="form-group">
-        <label>Valid Until</label>
-        <input type="date" [(ngModel)]="endDateString" name="validuntil">
+        <select [(ngModel)]="promotion.categoryid" name="categoryid">
+          <option value="" disabled selected hidden>Choose Category</option>
+          <option *ngFor="let key of getCategoryKeys()" [value]="key">
+            {{ categories[key] }}
+          </option>
+        </select>
       </div>
     </div>
+
+    <!-- Buttons -->
     <div class="button-group">
-      <button class="add-btn" type="submit">{{ isEditing ? "Update" : "Add" }}</button>
-      <button class="close-btn" type="button" (click)="cancelAdd()">Cancel</button>
+      <button type="submit" class="add-btn">{{ isEditing ? 'Update' : 'Add' }}</button>
+      <button type="button" class="close-btn" (click)="cancelAdd()">Cancel</button>
     </div>
   </form>
-</div>
 
-<div *ngIf="showPopup" class="confirm-dialog">
-  <div class="dialog-content">
-    <p>{{ popupMessage }}</p>
-    <div class="dialog-actions">
-      <button (click)="closePopup()" class="confirm-btn">Close</button>
+  <!-- Popup -->
+  <div *ngIf="showPopup" class="confirm-dialog">
+    <div class="dialog-content">
+      <p>{{ popupMessage }}</p>
+      <div class="dialog-actions">
+        <button (click)="closePopup()" class="confirm-btn">Close</button>
+      </div>
     </div>
   </div>
 </div>

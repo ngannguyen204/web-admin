@@ -1,4 +1,3 @@
-// product.service.ts
 import { Injectable } from '@angular/core';
 import {
   getDatabase,
@@ -7,12 +6,11 @@ import {
   update,
   remove,
   onValue,
-  get,
-  child,
 } from 'firebase/database';
 import { Observable } from 'rxjs';
 import { Product } from './class/product';
 import { FirebaseService } from './firebase.service';
+import { AuthService } from './auth.service';
 
 @Injectable({
   providedIn: 'root',
@@ -21,7 +19,10 @@ export class ProductService {
   private basePath = 'products';
   private db: any;
 
-  constructor(private firebaseService: FirebaseService) {
+  constructor(
+    private firebaseService: FirebaseService,
+    private authService: AuthService
+  ) {
     this.db = this.firebaseService.getDb();
   }
 
@@ -60,38 +61,59 @@ export class ProductService {
   }
 
   createProduct(product: Product): Observable<void> {
-    const productsRef = ref(this.db, this.basePath);
     return new Observable<void>((subscriber) => {
-      push(productsRef, product)
-        .then(() => {
-          subscriber.next();
-          subscriber.complete();
-        })
-        .catch((error) => subscriber.error(error));
+      this.authService.isAdmin().subscribe(isAdmin => {
+        if (!isAdmin) {
+          subscriber.error(new Error('Permission denied: Admin access required.'));
+          return;
+        }
+
+        const productsRef = ref(this.db, this.basePath);
+        push(productsRef, product)
+          .then(() => {
+            subscriber.next();
+            subscriber.complete();
+          })
+          .catch((error) => subscriber.error(error));
+      });
     });
   }
 
   updateProduct(productid: string, product: Product): Observable<void> {
-    const productRef = ref(this.db, `${this.basePath}/${productid}`);
     return new Observable<void>((subscriber) => {
-      update(productRef, product)
-        .then(() => {
-          subscriber.next();
-          subscriber.complete();
-        })
-        .catch((error) => subscriber.error(error));
+      this.authService.isAdmin().subscribe(isAdmin => {
+        if (!isAdmin) {
+          subscriber.error(new Error('Permission denied: Admin access required.'));
+          return;
+        }
+
+        const productRef = ref(this.db, `${this.basePath}/${productid}`);
+        update(productRef, product)
+          .then(() => {
+            subscriber.next();
+            subscriber.complete();
+          })
+          .catch((error) => subscriber.error(error));
+      });
     });
   }
 
   deleteProduct(productid: string): Observable<void> {
-    const productRef = ref(this.db, `${this.basePath}/${productid}`);
     return new Observable<void>((subscriber) => {
-      remove(productRef)
-        .then(() => {
-          subscriber.next();
-          subscriber.complete();
-        })
-        .catch((error) => subscriber.error(error));
+      this.authService.isAdmin().subscribe(isAdmin => {
+        if (!isAdmin) {
+          subscriber.error(new Error('Permission denied: Admin access required.'));
+          return;
+        }
+
+        const productRef = ref(this.db, `${this.basePath}/${productid}`);
+        remove(productRef)
+          .then(() => {
+            subscriber.next();
+            subscriber.complete();
+          })
+          .catch((error) => subscriber.error(error));
+      });
     });
   }
 
@@ -108,25 +130,24 @@ export class ProductService {
   }
 
   getCategories(): Observable<{ [key: string]: string }> {
-  const categoriesRef = ref(this.db, 'categories');
-  return new Observable(subscriber => {
-    onValue(
-      categoriesRef,
-      snapshot => {
-        const data = snapshot.val();
-        const categories: { [key: string]: string } = {};
+    const categoriesRef = ref(this.db, 'categories');
+    return new Observable(subscriber => {
+      onValue(
+        categoriesRef,
+        snapshot => {
+          const data = snapshot.val();
+          const categories: { [key: string]: string } = {};
 
-        if (data) {
-          Object.keys(data).forEach(key => {
-            categories[key] = data[key].name;
-          });
-        }
+          if (data) {
+            Object.keys(data).forEach(key => {
+              categories[key] = data[key].name;
+            });
+          }
 
-        subscriber.next(categories);
-      },
-      error => subscriber.error(error)
-    );
-  });
-}
-
+          subscriber.next(categories);
+        },
+        error => subscriber.error(error)
+      );
+    });
+  }
 }

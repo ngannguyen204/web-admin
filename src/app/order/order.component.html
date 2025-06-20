@@ -1,5 +1,5 @@
 <div class="order-container">
-  <h2>Quản lý đơn hàng</h2>
+  <h2>Order Management</h2>
 
   <!-- Bộ lọc -->
   <div class="filter-container">
@@ -24,29 +24,39 @@
 
   <!-- Bảng danh sách đơn hàng -->
   <table>
-    <thead>
-      <tr>
-        <th>Mã</th>
-        <th>Tên khách hàng</th>
-        <th>Địa chỉ</th>
-        <th>Ngày đặt</th>
-      <th>Tình trạng</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr *ngFor="let order of paginatedOrders">
-        <td>{{ order._id }}</td>
-        <td>{{ order.customer_id }}</td> <!-- Cần cập nhật để hiển thị tên khách hàng -->
-        <td>{{ order.delivery_address }}</td>
-        <td>{{ order.order_date | date }}</td>
-        <td>
-          <select [ngClass]="getStatusClass(order.order_status)" [(ngModel)]="order.order_status" (change)="updateOrderStatus(order)">
-            <option *ngFor="let status of getAllowedStatuses(order.order_status)" [value]="status.value">{{ status.label }}</option>
-          </select>
-        </td>
-      </tr>
-    </tbody>
-  </table>
+  <thead>
+    <tr>
+      <th>Order ID</th>
+      <th>Customer</th>
+      <th>Delivery Address</th>
+      <th>Order Date</th>
+      <th>Payment Method</th>
+      <th>Status</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let order of paginatedOrders">
+      <td>{{ order.orderid }}</td>
+      <td>{{ getCustomerName(order.userid) }}</td> <!-- Convert user ID to name -->
+      <td>{{ order.shippingdetails.address }}</td>
+      <td>{{ order.orderdate | date }}</td>
+      <td>{{ order.paymentmethod }}</td>
+      <td>
+        <select 
+          [ngClass]="getStatusClass(order.status)" 
+          [(ngModel)]="order.status" 
+          (change)="updateOrderStatus(order)">
+          <option 
+            *ngFor="let status of getAllowedStatuses(order.status)" 
+            [value]="status.value">
+            {{ status.label }}
+          </option>
+        </select>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
 
   <!-- Phân trang -->
   <div class="pagination">

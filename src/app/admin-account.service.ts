@@ -1,54 +1,135 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { getDatabase, ref, onValue, update, remove, push } from 'firebase/database';
 import { Observable } from 'rxjs';
 import { Admin } from './class/admin';
 import { Customer } from './class/customer';
+import { FirebaseService } from './firebase.service';
+import { AuthService } from './auth.service';
+
 @Injectable({
   providedIn: 'root'
 })
 export class AdminAccountService {
-  private apiUrl = 'http://localhost:8688'; // Thay đổi URL tùy theo backend của bạn
+  private db: any;
+  private adminPath = 'admins';
+  private userPath = 'users';
 
-  constructor(private http: HttpClient) {}
+  constructor(
+    private firebaseService: FirebaseService,
+    private authService: AuthService
+  ) {
+    this.db = this.firebaseService.getDb();
+  }
 
-  private getHeaders(): HttpHeaders {
-    const token = localStorage.getItem('token'); // Lấy token từ localStorage
-    return new HttpHeaders({
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${token}`
+  //  Get all admins
+  getAdmins(): Observable<Admin[]> {
+    return new Observable(subscriber => {
+      const refPath = ref(this.db, this.adminPath);
+      onValue(refPath, snapshot => {
+        const data = snapshot.val();
+        const result: Admin[] = [];
+
+        if (data) {
+          Object.keys(data).forEach(key => {
+            result.push({ ...data[key], adminid: key });
+          });
+        }
+
+        subscriber.next(result);
+      }, error => subscriber.error(error));
     });
   }
 
-  getAdmins(): Observable<Admin[]> {
-    return this.http.get<Admin[]>(`${this.apiUrl}/admin`, { headers: this.getHeaders() });
+  //  Get admin by ID
+  getAdminById(id: string): Observable<Admin | null> {
+    return new Observable(subscriber => {
+      const adminRef = ref(this.db, `${this.adminPath}/${id}`);
+      onValue(adminRef, snapshot => {
+        const data = snapshot.val();
+        subscriber.next(data ? { ...data, adminid: id } : null);
+      }, error => subscriber.error(error));
+    });
   }
 
-  getAdminById(id: string): Observable<Admin> {
-    return this.http.get<Admin>(`${this.apiUrl}/admin/${id}`, { headers: this.getHeaders() });
+  //  Create new admin
+  createAdmin(admin: Admin): Observable<void> {
+    return new Observable(subscriber => {
+      const refPath = ref(this.db, this.adminPath);
+      push(refPath, admin)
+        .then(() => {
+          subscriber.next();
+          subscriber.complete();
+        })
+        .catch(err => subscriber.error(err));
+    });
   }
 
-  createAdmin(admin: Admin): Observable<Admin> {
-    return this.http.post<Admin>(`${this.apiUrl}/admin`, admin, { headers: this.getHeaders() });
+  //  Update admin
+  updateAdmin(id: string, admin: Admin): Observable<void> {
+    return new Observable(subscriber => {
+      const adminRef = ref(this.db, `${this.adminPath}/${id}`);
+      update(adminRef, admin)
+        .then(() => {
+          subscriber.next();
+          subscriber.complete();
+        })
+        .catch(err => subscriber.error(err));
+    });
   }
 
-  updateAdmin(id: string, admin: Admin): Observable<Admin> {
-    return this.http.put<Admin>(`${this.apiUrl}/admin/${id}`, admin, { headers: this.getHeaders() });
+  //  Delete admin
+  deleteAdmin(id: string): Observable<void> {
+    return new Observable(subscriber => {
+      const adminRef = ref(this.db, `${this.adminPath}/${id}`);
+      remove(adminRef)
+        .then(() => {
+          subscriber.next();
+          subscriber.complete();
+        })
+        .catch(err => subscriber.error(err));
+    });
   }
 
-  deleteAdmin(id: string): Observable<any> {
-    return this.http.delete(`${this.apiUrl}/admin/${id}`, { headers: this.getHeaders() });
+  //  Get all customers (users)
+  getCustomers(): Observable<Customer[]> {
+    return new Observable(subscriber => {
+      const userRef = ref(this.db, this.userPath);
+      onValue(userRef, snapshot => {
+        const data = snapshot.val();
+        const customers: Customer[] = [];
+
+        if (data) {
+          Object.keys(data).forEach(key => {
+            customers.push({ ...data[key], userid: key });
+          });
+        }
+
+        subscriber.next(customers);
+      }, err => subscriber.error(err));
+    });
   }
 
-  getCustomers(headers: HttpHeaders): Observable<{ success: boolean, customers: Customer[] }> {
-    return this.http.get<{ success: boolean, customers: Customer[] }>(`${this.apiUrl}/customer`, { headers });
+  //  Get customer by ID
+  getCustomerById(id: string): Observable<Customer | null> {
+    return new Observable(subscriber => {
+      const userRef = ref(this.db, `${this.userPath}/${id}`);
+      onValue(userRef, snapshot => {
+        const data = snapshot.val();
+        subscriber.next(data ? { ...data, userid: id } : null);
+      }, err => subscriber.error(err));
+    });
   }
 
-  getCustomerById(id: string): Observable<Customer> {
-    return this.http.get<Customer>(`${this.apiUrl}/customer/${id}`, { headers: this.getHeaders() });
+  //  Update customer
+  updateCustomer(id: string, customer: Customer): Observable<void> {
+    return new Observable(subscriber => {
+      const userRef = ref(this.db, `${this.userPath}/${id}`);
+      update(userRef, customer)
+        .then(() => {
+          subscriber.next();
+          subscriber.complete();
+        })
+        .catch(err => subscriber.error(err));
+    });
   }
-
-  updateCustomer(id: string, customer: Customer): Observable<Customer> {
-    return this.http.put<Customer>(`${this.apiUrl}/customer/${id}`, customer, { headers: this.getHeaders() });
-  }
-
 }
