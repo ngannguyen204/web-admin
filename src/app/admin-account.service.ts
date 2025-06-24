@@ -11,7 +11,7 @@ import { AuthService } from './auth.service';
 })
 export class AdminAccountService {
   private db: any;
-  private adminPath = 'admins';
+  private adminPath = 'admin';
   private userPath = 'users';
 
   constructor(

@@ -17,5 +17,7 @@ export class AppComponent {
     const hiddenPages = ['/login', '/forgot-password', '/reset-password', '/confirm-code'];
     return hiddenPages.includes(this.router.url);
   }
+  isSidebarCollapsed = false;
+
   
 }

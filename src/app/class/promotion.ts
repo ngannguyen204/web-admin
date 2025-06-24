@@ -6,19 +6,21 @@ export class Promotion {
   categoryid: string = '';
   userid: string = '';
   isused: boolean = false;
-  validfrom: Date = new Date();
-  validuntil: Date = new Date();
+  validfrom: string = '';
+  validuntil: string = '';
 
-  constructor(init?: Partial<Promotion>) {
-    if (init) {
-      if (init.validfrom) {
-        this.validfrom = typeof init.validfrom === 'string' ? new Date(init.validfrom) : init.validfrom;
-      }
-      if (init.validuntil) {
-        this.validuntil = typeof init.validuntil === 'string' ? new Date(init.validuntil) : init.validuntil;
-      }
-
-      Object.assign(this, init);
+  
+  constructor(data?: Partial<Promotion>) {
+    if (data) {
+      this.promotionid = data.promotionid || '';
+      this.promotioncode = data.promotioncode || '';
+      this.discounttype = data.discounttype || '';
+      this.discountvalue = data.discountvalue || 0;
+      this.categoryid = data.categoryid || '';
+      this.userid = data.userid || '';
+      this.isused = !!data.isused;
+      this.validfrom = data.validfrom || '';
+      this.validuntil = data.validuntil || '';
     }
   }
 }
