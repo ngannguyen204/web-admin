@@ -38,8 +38,14 @@
         <td>{{ promo.discountvalue }}</td>
         <td>{{ categoryMap[promo.categoryid] || 'Unknown' }}</td>
         <td>
-          <button (click)="editPromotion(promo)">✏️</button>
-          <button (click)="showConfirmDeleteDialog(promo.promotionid)">🗑️</button>
+          <div class="action-buttons">
+            <button (click)="editPromotion(promo)">
+              <lucide-icon name="square-pen" strokeWidth="1.7" size="20"></lucide-icon>
+            </button>
+            <button class="delete" (click)="showConfirmDeleteDialog(promo.promotionid)">
+              <lucide-icon name="trash-2" strokeWidth="1.7" size="20"></lucide-icon>
+            </button>
+          </div>
         </td>
       </tr>
     </tbody>
@@ -49,8 +55,8 @@
     <div class="dialog-content">
       <p>Are you sure you want to delete this promotion?</p>
       <div class="dialog-actions">
-        <button (click)="confirmDelete()" class="confirm-btn">✅ Confirm</button>
-        <button (click)="closeConfirmDialog()" class="cancel-btn">❌ Cancel</button>
+        <button (click)="confirmDelete()" class="confirm-btn">Confirm</button>
+        <button (click)="closeConfirmDialog()" class="cancel-btn">Cancel</button>
       </div>
     </div>
   </div>

@@ -51,16 +51,35 @@ export class AdminAccountService {
     });
   }
 
-  //  Create new admin
+  //  Create new admin with auto-incremented id (admin001, admin002, ...)
   createAdmin(admin: Admin): Observable<void> {
     return new Observable(subscriber => {
       const refPath = ref(this.db, this.adminPath);
-      push(refPath, admin)
-        .then(() => {
-          subscriber.next();
-          subscriber.complete();
-        })
-        .catch(err => subscriber.error(err));
+      onValue(refPath, snapshot => {
+        const data = snapshot.val();
+        let maxId = 0;
+
+        if (data) {
+          Object.keys(data).forEach(key => {
+            const match = key.match(/^admin(\d+)$/);
+            if (match) {
+              const num = parseInt(match[1], 10);
+              if (num > maxId) maxId = num;
+            }
+          });
+        }
+
+        const newIdNum = maxId + 1;
+        const newId = `admin${newIdNum.toString().padStart(3, '0')}`;
+        const adminRef = ref(this.db, `${this.adminPath}/${newId}`);
+
+        update(adminRef, admin)
+          .then(() => {
+            subscriber.next();
+            subscriber.complete();
+          })
+          .catch(err => subscriber.error(err));
+      }, err => subscriber.error(err), { onlyOnce: true });
     });
   }
 

@@ -45,9 +45,14 @@
           </td>
           <td>{{ admin.lastlogin | date:'short' }}</td>
           <td>
-            <button *ngIf="!admin.isEditing" (click)="editAdmin(admin)">✏️</button>
-            <button *ngIf="admin.isEditing" (click)="saveAdmin(admin)">💾</button>
-            <button (click)="showDeletePopup(admin)">🗑️</button>
+            <div class="action-buttons">
+            <button (click)="editAdmin(admin)">
+              <lucide-icon name="square-pen" strokeWidth="1.7" size="20"></lucide-icon>
+            </button>
+            <button class="delete" (click)="showDeletePopup(admin)">
+              <lucide-icon name="trash-2" strokeWidth="1.7" size="20"></lucide-icon>
+            </button>
+          </div>
           </td>
         </tr>
       </ng-container>
@@ -76,7 +81,7 @@
 <div *ngIf="showConfirmDelete" class="popup">
   <p>Are you sure you want to delete "{{ selectedItem?.username || selectedItem?.name }}"?</p>
   <div class="button-group">
-    <button (click)="deleteItem()">✅ Confirm</button>
-    <button (click)="hideDeletePopup()">❌ Cancel</button>
+    <button (click)="deleteItem()">Confirm</button>
+    <button (click)="hideDeletePopup()">Cancel</button>
   </div>
 </div>

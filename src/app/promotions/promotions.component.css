@@ -114,16 +114,6 @@
     background-color: #B0D4F1;
 }
 
-/* Nút Delete */
-.action-buttons .delete {
-    background-color: #F8D7DA;
-    color: #721C24;
-    border: 1px solid #721C24;
-}
-
-.action-buttons .delete:hover {
-    background-color: #E4B5B8;
-}
 
 /* PHÂN TRANG */
 .pagination {
@@ -250,3 +240,30 @@ color: black;
     cursor: pointer;
 }
 
+
+.action-buttons {
+  display: flex;
+  gap: 8px;
+}
+
+.action-buttons button {
+  background-color: #fff;
+  border: 1px solid #E5E7EB;
+  padding: 6px 8px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.action-buttons button:hover {
+  background-color: #f3f4f6;
+}
+
+.action-buttons button.delete {
+  border-color: #F87171;
+  color: #B91C1C;
+}
+
+.action-buttons button.delete:hover {
+  background-color: #FECACA;
+}

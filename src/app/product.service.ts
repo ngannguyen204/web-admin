@@ -69,12 +69,32 @@ export class ProductService {
         }
 
         const productsRef = ref(this.db, this.basePath);
-        push(productsRef, product)
-          .then(() => {
-            subscriber.next();
-            subscriber.complete();
-          })
-          .catch((error) => subscriber.error(error));
+        // Get all products to determine max id in '001', '002', ... format
+        onValue(
+          productsRef,
+          snapshot => {
+            const data = snapshot.val();
+            let maxId = 0;
+            if (data) {
+              Object.keys(data).forEach(key => {
+                const numId = parseInt(key, 10);
+                if (!isNaN(numId) && numId > maxId) {
+                  maxId = numId;
+                }
+              });
+            }
+            const newId = (maxId + 1).toString().padStart(3, '0');
+            const newProductRef = ref(this.db, `${this.basePath}/${newId}`);
+            update(newProductRef, product)
+              .then(() => {
+                subscriber.next();
+                subscriber.complete();
+              })
+              .catch((error) => subscriber.error(error));
+          },
+          error => subscriber.error(error),
+          { onlyOnce: true }
+        );
       });
     });
   }
