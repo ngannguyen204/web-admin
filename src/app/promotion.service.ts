@@ -62,8 +62,9 @@ export class PromotionService {
   // Create promotion (ID already exists)
   createPromotion(promotion: Promotion): Observable<void> {
     return new Observable<void>(subscriber => {
+      const normalizedPromotion = this.normalizePromotionDates(promotion);
       const promoRef = ref(this.db, `${this.basePath}/${promotion.promotionid}`);
-      set(promoRef, promotion)
+      set(promoRef, normalizedPromotion)
         .then(() => {
           subscriber.next();
           subscriber.complete();
@@ -72,11 +73,13 @@ export class PromotionService {
     });
   }
 
+
   // Update existing promotion
   updatePromotion(id: string, promotion: Promotion): Observable<void> {
     return new Observable<void>(subscriber => {
+      const normalizedPromotion = this.normalizePromotionDates(promotion);
       const promoRef = ref(this.db, `${this.basePath}/${id}`);
-      update(promoRef, promotion)
+      update(promoRef, normalizedPromotion)
         .then(() => {
           subscriber.next();
           subscriber.complete();
@@ -97,4 +100,22 @@ export class PromotionService {
         .catch(error => subscriber.error(error));
     });
   }
+
+
+  private normalizePromotionDates(promotion: any): any {
+  const normalized = { ...promotion };
+
+  ['validfrom', 'validuntil'].forEach(field => {
+    const value = normalized[field];
+    if (value && typeof value === 'string') {
+      const date = new Date(value);
+      if (!isNaN(date.getTime())) {
+        normalized[field] = date.toISOString();
+      }
+    }
+  });
+
+  return normalized;
 }
+  }
+

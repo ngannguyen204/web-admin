@@ -1,157 +1,237 @@
 .admin-container {
-    width: 100%;
-    padding: 20px;
-    background: #f8f9fa;
-    border-radius: 10px;
+  width: 100%;
+  padding: 24px;
+  background: #f9fafb;
+  border-radius: 12px;
 }
 
 .toggle-container {
-    display: flex;
-    gap: 10px;
-    margin-bottom: 15px;
+  display: flex;
+  gap: 12px;
+  margin-bottom: 20px;
 }
 
 .toggle-container button {
-    flex: 1;
-    padding: 10px;
-    border: none;
-    font-size: 16px;
-    font-weight: bold;
-    cursor: pointer;
-    border-radius: 5px;
-    transition: 0.3s;
+  flex: 1;
+  padding: 12px;
+  font-size: 15px;
+  font-weight: 600;
+  border-radius: 10px;
+  border: 1px solid #ccc;
+  background: white;
+  cursor: pointer;
+  transition: 0.2s ease;
 }
 
 .toggle-container button.active {
-    background-color: #063B06;
-    color: white;
+  background-color: #063B06;
+  color: white;
+  border: 1px solid transparent;
 }
 
 .header-container {
-    display: flex;
-    gap: 12px;
-    align-items: center;
-    margin-bottom: 15px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
 }
 
 .add-button {
-    background-color: #2d4b21;
-    color: white;
-    padding: 10px 20px;
-    border-radius: 20px;
-    border: none;
-    font-size: 16px;
-    cursor: pointer;
-    font-weight: bold;
+  background-color: #063B06;
+  color: white;
+  padding: 10px 24px;
+  border-radius: 24px;
+  font-size: 15px;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  transition: 0.3s ease;
+}
+
+.add-button:hover {
+  background-color: #045a04;
 }
 
 .search-bar {
-    display: flex;
-    align-items: center;
-    background: white;
-    border: 1px solid #ddd;
-    border-radius: 20px;
-    padding: 5px 10px;
+  display: flex;
+  align-items: center;
+  background: #ffffff;
+  border: 1px solid #ddd;
+  border-radius: 24px;
+  padding: 6px 16px;
 }
 
 .search-bar input {
-    border: none;
-    outline: none;
-    font-size: 14px;
-    padding: 5px;
-    width: 200px;
+  border: none;
+  outline: none;
+  font-size: 14px;
+  padding: 6px;
+  width: 220px;
+  background: transparent;
 }
 
 table {
-    width: 100%;
-    border-collapse: collapse;
-    background: white;
-    border-radius: 8px;
-    overflow: hidden;
-    box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  background: white;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
 }
 
 th, td {
-    padding: 12px;
-    border-bottom: 1px solid #ddd;
-    text-align: center;
-    font-size: 14px;
+  padding: 14px 16px;
+  text-align: center;
+  font-size: 14px;
+  border-bottom: 1px solid #eee;
 }
 
 th {
-    background-color: #f1f1f1;
-    font-weight: bold;
+  background-color: #f3f4f6;
+  font-weight: 600;
+  color: #4B5563;
+}
+
+tr:last-child td {
+  border-bottom: none;
+}
+
+tr:hover {
+  background-color: #f9fafb;
+}
+
+td:first-child {
+  color: #6B7280;
+  font-weight: 500;
+}
+
+td:nth-child(3) {
+  color: #1E1E1E;
+  font-weight: 500;
 }
 
 .action-buttons {
-    display: flex;
-    justify-content: center;
-    gap: 10px;
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+}
+
+.action-buttons button {
+  background: white;
+  border: 1px solid #E5E7EB;
+  border-radius: 8px;
+  padding: 8px 10px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.action-buttons button:hover {
+  background: #f3f4f6;
 }
 
 .popup {
-    position: fixed;
-    background: white;
-    padding: 20px;
-    box-shadow: 0px 0px 10px gray;
-    top: 30%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    border-radius: 10px;
-    z-index: 100;
-    text-align: center;
-  }
-  
-  .button-group {
-    display: flex;
-    justify-content: center;
-    gap: 10px; /* Khoảng cách giữa hai nút */
-    margin-top: 10px;
-  }
-  
-  .button-group button {
-    padding: 10px 15px;
-    border: none;
-    cursor: pointer;
-    border-radius: 5px;
-    background-color: #f1f1f1;
-  }
-  
-  .button-group button:first-child {
-    background-color: #f1f1f1;
-  }
-  
-  .button-group button:last-child {
-    background-color: #f1f1f1;
-  }
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: #ffffff;
+  padding: 24px 32px;
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  z-index: 9999;
+  min-width: 320px;
+}
+
+.button-group {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.button-group button {
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  transition: 0.3s ease;
+}
+
+.button-group button:first-child {
+  background-color: #e53935;
+  color: white;
+}
+
+.button-group button:first-child:hover {
+  background-color: #d32f2f;
+}
+
+.button-group button:last-child {
+  background-color: #f3f4f6;
+  color: #333;
+}
+
+.button-group button:last-child:hover {
+  background-color: #e5e7eb;
+}
+
 .pagination-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-top: 10px;
-    gap: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 20px;
+  gap: 12px;
 }
 
 .pagination-container button {
-    background-color: #063B06;
-    color: white;
-    border: none;
-    padding: 8px 16px;
-    font-size: 16px;
-    cursor: pointer;
-    border-radius: 5px;
-    transition: background 0.3s ease;
+  background-color: #063B06;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  font-size: 14px;
+  border-radius: 6px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.3s ease;
 }
 
 .pagination-container button:disabled {
-    background-color: #999;
-    cursor: not-allowed;
+  background-color: #ccc;
+  cursor: not-allowed;
 }
 
 .pagination-container span {
-    font-size: 16px;
-    font-weight: bold;
+  font-size: 15px;
+  font-weight: 600;
 }
 
+.action-buttons {
+  display: flex;
+  gap: 8px;
+}
 
+.action-buttons button {
+  background-color: #fff;
+  border: 1px solid #E5E7EB;
+  padding: 6px 8px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
 
+.action-buttons button:hover {
+  background-color: #f3f4f6;
+}
+
+.action-buttons button.delete {
+  border-color: #F87171;
+  color: #B91C1C;
+}
+
+.action-buttons button.delete:hover {
+  background-color: #FECACA;
+}

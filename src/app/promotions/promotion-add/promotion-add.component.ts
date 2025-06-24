@@ -17,10 +17,6 @@ export class PromotionAddComponent implements OnInit {
   popupMessage = '';
   categories: { [key: string]: string } = {};
 
-
-  startDateString: string = '';
-  endDateString: string = '';
-
   constructor(
     private router: Router,
     private route: ActivatedRoute,
@@ -29,67 +25,66 @@ export class PromotionAddComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-  this.route.params.subscribe(params => {
-    const id = params['id'];
-    if (id) {
-      this.isEditing = true;
-      this.loadPromotionData(id);
-    } else {
-      // When adding: generate new ID + default isused false
-      this.isEditing = false;
-      this.generatePromotionId(); 
-      this.promotion.isused = false;
+    this.route.params.subscribe(params => {
+      const id = params['id'];
+      if (id) {
+        this.isEditing = true;
+        this.loadPromotionData(id);
+      } else {
+        this.isEditing = false;
+        this.generatePromotionId();
+        this.promotion.isused = false;
+      }
+    });
+
+    this.loadCategories();
+  }
+
+  generatePromotionId() {
+    this.promotionService.getAllPromotions().subscribe(promos => {
+      const ids = promos
+        .map(p => parseInt(p.promotionid?.replace('promo', ''), 10))
+        .filter(num => !isNaN(num));
+      const maxId = ids.length > 0 ? Math.max(...ids) : 0;
+      this.promotion.promotionid = `promo${String(maxId + 1).padStart(3, '0')}`;
+    });
+  }
+
+  savePromotion() {
+    if (!this.isFormValid()) {
+      this.showPopupMessage("Please fill in all required fields.");
+      return;
     }
-  });
-  this.loadCategories();
-}
 
-generatePromotionId() {
-  this.promotionService.getAllPromotions().subscribe(promos => {
-    const ids = promos
-  .map(p => parseInt(p.promotionid?.replace('promo', ''), 10))
-  .filter(num => !isNaN(num));
-    const maxId = ids.length > 0 ? Math.max(...ids) : 0;
-    this.promotion.promotionid = `promo${String(maxId + 1).padStart(3, '0')}`;
-  });
-}
+    // Convert to ISO before saving
+    this.promotion.validfrom = new Date(this.promotion.validfrom).toISOString();
+    this.promotion.validuntil = new Date(this.promotion.validuntil).toISOString();
+    this.promotion.isused = !!this.promotion.isused;
 
-// Ensure valid type before sending
-savePromotion() {
-  if (!this.isFormValid()) {
-    this.showPopupMessage("Please fill in all required fields.");
-    return;
+    const save$ = this.isEditing
+      ? this.promotionService.updatePromotion(this.promotion.promotionid, this.promotion)
+      : this.promotionService.createPromotion(this.promotion);
+
+    save$.subscribe({
+      next: () => {
+        this.showPopupMessage(this.isEditing ? "Promotion updated!" : "Promotion created!");
+        setTimeout(() => this.router.navigate(['/promotions']), 1500);
+      },
+      error: () => this.showPopupMessage("Save failed.")
+    });
   }
 
-  this.promotion.validfrom = new Date(this.startDateString);
-  this.promotion.validuntil = new Date(this.endDateString);
-
-  // in case someone bypasses the disabled field
-  this.promotion.isused = !!this.promotion.isused;
-
-  const save$ = this.isEditing
-    ? this.promotionService.updatePromotion(this.promotion.promotionid, this.promotion)
-    : this.promotionService.createPromotion(this.promotion);
-
-  save$.subscribe({
-    next: () => {
-      this.showPopupMessage(this.isEditing ? "Promotion updated!" : "Promotion created!");
-      setTimeout(() => this.router.navigate(['/promotions']), 1500);
-    },
-    error: () => this.showPopupMessage("Save failed.")
-  });
-}
-
-
-  formatDate(date: string | Date): string {
-    const d = new Date(date);
-    const year = d.getFullYear();
-    const month = ('0' + (d.getMonth() + 1)).slice(-2);
-    const day = ('0' + d.getDate()).slice(-2);
-    return `${year}-${month}-${day}`;
+  loadPromotionData(id: string) {
+    this.promotionService.getPromotionById(id).subscribe(promotion => {
+      if (promotion) {
+        this.promotion = new Promotion(promotion); // constructor will parse validfrom/until
+      } else {
+        this.showPopupMessage("Promotion not found.");
+      }
+    });
   }
 
-    loadCategories(): void {
+  loadCategories(): void {
     this.productService.getCategories().subscribe({
       next: (categories) => {
         this.categories = categories;
@@ -99,19 +94,7 @@ savePromotion() {
   }
 
   getCategoryKeys(): string[] {
-  return Object.keys(this.categories);
-}
-
-  loadPromotionData(id: string) {
-    this.promotionService.getPromotionById(id).subscribe(promotion => {
-      if (promotion) {
-        this.startDateString = this.formatDate(promotion.validfrom);
-        this.endDateString = this.formatDate(promotion.validuntil);
-        this.promotion = new Promotion(promotion);
-      } else {
-        this.showPopupMessage("Promotion not found.");
-      }
-    });
+    return Object.keys(this.categories);
   }
 
   cancelAdd() {
@@ -124,8 +107,8 @@ savePromotion() {
       this.promotion.discounttype.trim() !== '' &&
       !isNaN(this.promotion.discountvalue) &&
       this.promotion.categoryid.trim() !== '' &&
-      this.startDateString.trim() !== '' &&
-      this.endDateString.trim() !== ''
+      !!this.promotion.validfrom &&
+      !!this.promotion.validuntil
     );
   }
 

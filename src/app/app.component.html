@@ -3,9 +3,7 @@
 </header>
 
 <div class="container" [ngClass]="{'full-screen': isLoginPage()}">
-  <aside *ngIf="!isLoginPage()">
-    <app-slide-bar></app-slide-bar>
-  </aside>
+  <app-slide-bar *ngIf="!isLoginPage()" [isCollapsed]="isSidebarCollapsed"></app-slide-bar>
 
   <main>
     <router-outlet></router-outlet> 

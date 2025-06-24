@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 
 @Component({
   selector: 'app-slide-bar',
@@ -7,7 +7,7 @@ import { Component } from '@angular/core';
   styleUrls: ['./slide-bar.component.css']
 })
 export class SlideBarComponent {
-  isCollapsed = false;
+  @Input() isCollapsed = false;
 
   toggleSidebar() {
     this.isCollapsed = !this.isCollapsed;

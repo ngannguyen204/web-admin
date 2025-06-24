@@ -95,11 +95,6 @@ export class PromotionsComponent implements OnInit {
   }
 
   editPromotion(promo: Promotion) {
-    const token = localStorage.getItem('token');
-    if (!token) {
-      this.showPopupMessage("Please log in to edit promotions.");
-      return;
-    }
     this.router.navigate(['/promotion-add', promo.promotionid]);
   }
 

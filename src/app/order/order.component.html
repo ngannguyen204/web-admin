@@ -1,11 +1,23 @@
 <div class="order-container">
   <h2>Order Management</h2>
 
-  <!-- Bộ lọc -->
-  <div class="filter-container">
-    <button (click)="toggleFilterPopup()">Lọc theo tình trạng</button>
-    <button (click)="clearFilters()">❌ Hủy lọc</button>
+  <div class="filter-group">
+    <div class="filter-item icon">
+      <lucide-icon name="funnel"></lucide-icon>
+    </div>
+    <div class="filter-item label">
+      Filter
+    </div>
+    <div class="filter-item status" (click)="toggleFilterPopup()">
+      Status
+      <lucide-icon name="chevron-down" class="chevron-icon"></lucide-icon>
+    </div>
+    <div class="filter-item cancel" (click)="clearFilters()">
+      <lucide-icon name="rotate-ccw"></lucide-icon>
+      <span>Cancel</span>
+    </div>
   </div>
+
 
   <!-- Popup chọn trạng thái -->
   <div class="filter-popup" *ngIf="showFilterPopup">

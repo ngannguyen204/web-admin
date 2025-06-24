@@ -62,7 +62,7 @@ import { getFirestore, provideFirestore } from '@angular/fire/firestore';
     CommonModule,
     QuillModule.forRoot(),
     LucideAngularModule.pick(icons),
-
+    
     AngularFireModule.initializeApp(firebaseConfig),
     AngularFireDatabaseModule,
     AngularFireAnalyticsModule,
