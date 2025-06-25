@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { AuthService } from '../auth.service';
 
 @Component({
   selector: 'app-admin-header',
@@ -8,27 +9,32 @@ import { Router } from '@angular/router';
   styleUrls: ['./admin-header.component.css']
 })
 export class AdminHeaderComponent implements OnInit {
-  username: string = 'Admin';  // Giá trị mặc định nếu không có dữ liệu
-  role: string = 'Admin';      // Giá trị mặc định
+  username: string = 'Admin';
+  role: string = 'Admin';
 
-  constructor(private router: Router) {}
+  constructor(private router: Router, private authService: AuthService) {}
 
   ngOnInit() {
-    // Lấy thông tin user từ localStorage
-    const userData = localStorage.getItem('userData');
-    if (userData) {
-      const user = JSON.parse(userData);
-      this.username = user.username || 'Admin'; // Nếu có username, sẽ hiển thị đúng tên
-      this.role = user.role || 'Admin';
+    // Get admin info from localStorage (stored by AuthService)
+    const adminData = localStorage.getItem('adminAuth');
+    if (adminData) {
+      try {
+        const admin = JSON.parse(adminData);
+        this.username = admin.name || admin.username || admin.email || 'Admin';
+        this.role = 'Admin'; // Since this is admin header, role is always Admin
+      } catch (e) {
+        console.error('Error parsing admin data:', e);
+      }
     }
   }
 
   logout() {
-    // Xóa thông tin đăng nhập
-    localStorage.removeItem('userData');
-    localStorage.removeItem('token');
-
-    // Chuyển hướng về trang đăng nhập
-    this.router.navigate(['/login']);
+    // Use AuthService's logout method which properly handles cleanup
+    this.authService.logout().then(() => {
+      this.router.navigate(['/login']);
+    }).catch(error => {
+      console.error('Logout error:', error);
+      this.router.navigate(['/login']);
+    });
   }
 }

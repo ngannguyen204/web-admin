@@ -5,11 +5,15 @@ import { HttpClientModule } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
+import { registerLocaleData } from '@angular/common';
+import localeVi from '@angular/common/locales/vi';
+
 
 
 import { AdminHeaderComponent } from './admin-header/admin-header.component';
 import { SlideBarComponent } from './slide-bar/slide-bar.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
+import { DashboardService } from './dashboard.service';
 import { PromotionsComponent } from './promotions/promotions.component';
 import { PromotionAddComponent } from './promotions/promotion-add/promotion-add.component';
 import { OrderComponent } from './order/order.component';
@@ -35,12 +39,16 @@ import { firebaseConfig } from './firebase.config';
 import { initializeApp, provideFirebaseApp } from '@angular/fire/app';
 import { getAuth, provideAuth } from '@angular/fire/auth';
 import { getFirestore, provideFirestore } from '@angular/fire/firestore';
+import { FirebaseService } from './firebase.service';
+registerLocaleData(localeVi);
+
 
 @NgModule({
   declarations: [
     AppComponent,
     PromotionsComponent,
     PromotionAddComponent,
+    DashboardComponent,
     DashboardComponent,
     OrderComponent,
     ProductComponent,
@@ -67,8 +75,11 @@ import { getFirestore, provideFirestore } from '@angular/fire/firestore';
     AngularFireDatabaseModule,
     AngularFireAnalyticsModule,
     AngularFireAuthModule,
+    
   ],
   providers: [
+    DashboardService,
+    FirebaseService,
     provideFirebaseApp(() => initializeApp({
       projectId: "collabeyewears",
       appId: "1:996727863026:web:ad101d9df427462a6d026b",
@@ -77,7 +88,8 @@ import { getFirestore, provideFirestore } from '@angular/fire/firestore';
       apiKey: "AIzaSyAei3EsRMBn1087E8Yu-A3c4sRzNKjZFJE",
       authDomain: "collabeyewears.firebaseapp.com",
       messagingSenderId: "996727863026",
-      measurementId: "G-36D1DF3ND0"
+      measurementId: "G-36D1DF3ND0",
+      
     })),
     provideAuth(() => getAuth()),
     provideFirestore(() => getFirestore())

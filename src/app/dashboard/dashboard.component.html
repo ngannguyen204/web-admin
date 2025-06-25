@@ -1,51 +1,76 @@
 <div class="dashboard-container">
-  <!-- Thống kê hôm nay -->
+  <!-- Loading indicator -->
+  <div *ngIf="isLoading" class="loading-overlay">
+    <div class="loading-spinner"></div>
+  </div>
+
+  <!-- Today's Stats -->
   <div class="stats">
     <div class="stat-box">
-      <h3>Lượt truy cập</h3>
-      <p>{{ stats.visits }}</p>
+      <h3>Visits</h3>
+      <p>{{ stats.visits | number }}</p>
     </div>
     <div class="stat-box">
-      <h3>Đơn hàng</h3>
-      <p>{{ stats.orders }}</p>
+      <h3>Orders</h3>
+      <p>{{ stats.orders | number }}</p>
     </div>
     <div class="stat-box">
-      <h3>Doanh thu hôm nay</h3>
-      <p>{{ stats.revenue  }}</p>
+      <h3>Revenue</h3>
+      <p>{{ stats.revenue | currency:'VND':'symbol':'1.0-0':'vi' }}</p>
     </div>
   </div>
 
-  <!-- Bộ lọc tháng -->
+  <!-- Month/Year Filter -->
   <div class="filter-section">
-    <label for="month">Chọn tháng:</label>
-    <select id="month" (change)="onMonthChange($event)">
-      <option *ngFor="let month of months" [value]="month">
-        Tháng {{ month }}
-      </option>
-    </select>
+    <div class="filter-group">
+      <label for="month">Month:</label>
+      <select id="month" [(ngModel)]="selectedMonth" (change)="onMonthChange($event)">
+        <option *ngFor="let month of months" [value]="month">
+          {{ monthNames[month - 1] }}
+        </option>
+      </select>
+    </div>
+    
+    <div class="filter-group">
+      <label for="year">Year:</label>
+      <select id="year" [(ngModel)]="selectedYear" (change)="onYearChange($event)">
+        <option *ngFor="let year of years" [value]="year">
+          {{ year }}
+        </option>
+      </select>
+    </div>
   </div>
 
-  <!-- Biểu đồ doanh thu -->
+  <!-- Sales Chart -->
   <div class="chart-container">
-    <canvas id="salesChart"></canvas>
+    <h2>{{ showYearlyView ? 'Yearly Performance' : 'Monthly Revenue' }}</h2>
+    <div *ngIf="(showYearlyView && stats.monthlyData.length === 0) || (!showYearlyView && salesData.length === 0)" class="no-data">
+      No data available for selected period
+    </div>
+    <canvas #salesChartCanvas *ngIf="(showYearlyView && stats.monthlyData.length > 0) || (!showYearlyView && salesData.length > 0)"></canvas>
   </div>
 
-  <!-- Bảng sản phẩm bán chạy -->
+  <!-- Top Selling Products -->
   <div class="top-products">
-    <h2>Top 5 Sản phẩm bán chạy nhất</h2>
-    <table>
+    <h2>Top 5 Best Selling Products</h2>
+    <div *ngIf="topSellingProducts.length === 0" class="no-data">
+      No product data available
+    </div>
+    <table *ngIf="topSellingProducts.length > 0">
       <thead>
         <tr>
-          <th>Mã</th>
-          <th>Tên sản phẩm</th>
-          <th>Số lượng bán</th>
+          <th>#</th>
+          <th>Product ID</th>
+          <th>Product Name</th>
+          <th>Quantity Sold</th>
         </tr>
       </thead>
       <tbody>
         <tr *ngFor="let product of topSellingProducts">
           <td>{{ product._id }}</td>
+          <td>{{ product.product_id }}</td>
           <td>{{ product.product_name }}</td>
-          <td>{{ product.total_sold }}</td>
+          <td>{{ product.total_sold | number }}</td>
         </tr>
       </tbody>
     </table>
