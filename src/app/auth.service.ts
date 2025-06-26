@@ -11,10 +11,10 @@ import { firebaseConfig } from './firebase.config';
   providedIn: 'root'
 })
 export class AuthService {
-  private readonly adminTokenKey = 'adminAuth';
+ private readonly adminTokenKey = 'adminAuth';
   private readonly userTokenKey = 'userAuth';
   private readonly resetEmailKey = 'resetEmail';
-
+  private readonly firebaseUserKey = 'firebaseUser';
   constructor(
     private afAuth: AngularFireAuth,
     private router: Router,
@@ -30,85 +30,129 @@ export class AuthService {
   }
 
   async login(email: string, password: string): Promise<firebase.auth.UserCredential> {
-    try {
-      const userCredential = await this.afAuth.signInWithEmailAndPassword(email, password);
-      const isAdmin = await this.checkAdminStatus(userCredential.user);
-      
-      if (!isAdmin) {
-        await this.afAuth.signOut();
-        throw new Error('Only admin users are allowed to login');
-      }
-      
-      return userCredential;
-    } catch (error) {
-      console.error('Auth error:', error);
-      throw error;
-    }
-  }
-
-  private async checkAdminStatus(user: firebase.User | null): Promise<boolean> {
-  if (!user || !user.email) return false;
-
   try {
-    const adminsRef = this.db.database.ref('admin');
-    const query = adminsRef.orderByChild('email').equalTo(user.email);
-    const adminsSnapshot = await query.once('value');
-
-    if (adminsSnapshot.exists()) {
-      const adminKey = Object.keys(adminsSnapshot.val())[0];
-      const adminData = adminsSnapshot.val()[adminKey];
-
-      if (adminData.adminid && adminData.adminid.includes('admin')) {
-        // Set the value to true instead of just setting the node
-        await this.db.database.ref(`firebaseUidToAdminId/${user.uid}`).set(true);
-        
-        const { password, ...adminInfo } = adminData;
-        localStorage.setItem(this.adminTokenKey, JSON.stringify({
-          uid: user.uid,
-          ...adminInfo
-        }));
-        
-        return true;
-      }
+    // Xóa toàn bộ session và token cũ TRƯỚC KHI đăng nhập
+    await this.afAuth.signOut();
+    localStorage.removeItem(this.adminTokenKey);
+    localStorage.removeItem('firebaseUidToAdminId');
+    
+    const normalizedEmail = email.toLowerCase().trim();
+    const userCredential = await this.afAuth.signInWithEmailAndPassword(normalizedEmail, password);
+    
+    
+    await new Promise(resolve => setTimeout(resolve, 100));
+    
+    const isAdmin = await this.checkAdminStatus(userCredential.user);
+    
+    if (!isAdmin) {
+      await this.afAuth.signOut();
+      localStorage.removeItem(this.adminTokenKey);
+      throw new Error('Chỉ quản trị viên được phép đăng nhập');
     }
-    return false;
+    
+    return userCredential;
   } catch (error) {
-    console.error('Error checking admin status:', error);
+    console.error('Lỗi đăng nhập:', error);
+    await this.afAuth.signOut();
+    localStorage.removeItem(this.adminTokenKey);
     throw error;
   }
 }
 
-  /*private async checkAdminStatus(user: firebase.User | null): Promise<boolean> {
-    if (!user || !user.email) return false;
-
-    try {
-      const adminsRef = this.db.database.ref('admin');
-      const query = adminsRef.orderByChild('email').equalTo(user.email);
-      const adminsSnapshot = await query.once('value');
-
-      if (adminsSnapshot.exists()) {
-        const adminKey = Object.keys(adminsSnapshot.val())[0];
-        const adminData = adminsSnapshot.val()[adminKey];
-
-        if (adminData.adminid && adminData.adminid.includes('admin')) {
-          await this.db.database.ref(`firebaseUidToAdminId/${user.uid}`).set(true);
-          
-          const { password, ...adminInfo } = adminData;
-          localStorage.setItem(this.adminTokenKey, JSON.stringify({
-            uid: user.uid,
-            ...adminInfo
-          }));
-          
-          return true;
-        }
+  public async cleanUpSession(): Promise<void> {
+  try {
+    // Sign out from Firebase
+    await this.afAuth.signOut();
+    
+    // List of all auth-related keys to remove
+    const authKeys = [
+      this.adminTokenKey,
+      this.userTokenKey,
+      this.resetEmailKey,
+      this.firebaseUserKey, // Add the firebaseUser key
+      'rememberedUser',
+      'accessToken',
+      'authToken',
+      'customer_id',
+      'email',
+      'resetToken',
+      'user'
+    ];
+    
+    // Remove all specified keys
+    authKeys.forEach(key => localStorage.removeItem(key));
+    
+    // Remove any Firebase-specific keys (pattern matching)
+    Object.keys(localStorage).forEach(key => {
+      if (key.startsWith('firebase:') || 
+          key.startsWith('firebaseui::') ||
+          key.includes('firebasehost') ||
+          key.includes('firebaseUser')) {
+        localStorage.removeItem(key);
       }
-      return false;
-    } catch (error) {
-      console.error('Error checking admin status:', error);
-      throw error;
-    }
-  }*/
+    });
+  } catch (error) {
+    console.error('Error cleaning session:', error);
+    throw error;
+  }
+}
+private async checkAdminStatus(user: firebase.User | null): Promise<boolean> {
+  if (!user || !user.email) {
+    await this.cleanUpSession();
+    return false;
+  }
 
+  try {
+    const normalizedEmail = user.email.toLowerCase().trim();
+    console.log(`Checking admin for UID: ${user.uid}`);
+
+    // Kiểm tra token hiện tại
+    const currentToken = this.getCurrentAdmin();
+    if (currentToken?.uid === user.uid) {
+      return true;
+    }
+
+    // Tìm admin bằng email
+    const adminsRef = this.db.database.ref('admin');
+    const query = adminsRef.orderByChild('email').equalTo(normalizedEmail);
+    const snapshot = await query.once('value');
+
+    if (!snapshot.exists()) {
+      await this.cleanUpSession();
+      return false;
+    }
+
+    let isAdmin = false;
+    snapshot.forEach((childSnapshot) => {
+      const adminData = childSnapshot.val();
+      if (adminData?.adminid?.toString().toLowerCase().includes('admin')) {
+        isAdmin = true;
+        
+        // Lưu token (không bao gồm mật khẩu)
+        const { password, ...safeAdminData } = adminData;
+        localStorage.setItem(this.adminTokenKey, JSON.stringify({
+          uid: user.uid,
+          email: normalizedEmail,
+          ...safeAdminData
+        }));
+
+        // Thử cập nhật UID mapping
+        this.db.database.ref(`firebaseUidToAdminId/${user.uid}`)
+          .set(true)
+          .catch(err => {
+            console.warn("Không thể cập nhật UID mapping (có thể bỏ qua nếu đã tồn tại):", err);
+          });
+      }
+      return !isAdmin;
+    });
+
+    return isAdmin;
+  } catch (error) {
+    console.error('Lỗi kiểm tra admin:', error);
+    await this.cleanUpSession();
+    throw error;
+  }
+}
   isAuthenticated(): Observable<boolean> {
     return this.afAuth.authState.pipe(
       map(user => !!user),
@@ -119,27 +163,28 @@ export class AuthService {
   isAdmin(): Observable<boolean> {
     return this.afAuth.authState.pipe(
       switchMap((user) => {
-        if (!user) return of(false);
+        if (!user || !user.email) return of(false);
         
-        const adminData = localStorage.getItem(this.adminTokenKey);
-        if (adminData) {
-          try {
-            const parsedData = JSON.parse(adminData);
-            if (parsedData.adminid && parsedData.adminid.includes('admin')) {
-              return from(this.db.database.ref(`firebaseUidToAdminId/${user.uid}`).once('value')).pipe(
-                map(snapshot => snapshot.val() === true),
-                catchError(() => of(false))
-              );
-            }
-          } catch {
-            return of(false);
-          }
+        const adminData = this.getCurrentAdmin();
+        if (!adminData) return of(false);
+        
+        // Kiểm tra xem email trong token có khớp với email đang đăng nhập không
+        if (adminData.email !== user.email.toLowerCase().trim()) {
+          this.cleanUpSession();
+          return of(false);
         }
-        
-        return of(false);
+
+        return from(this.db.database.ref(`firebaseUidToAdminId/${user.uid}`).once('value')).pipe(
+          map(snapshot => snapshot.val() === true),
+          catchError(() => {
+            this.cleanUpSession();
+            return of(false);
+          })
+        );
       })
     );
   }
+
 
   async getUserId(uid: string): Promise<string | null> {
     try {
@@ -192,17 +237,14 @@ export class AuthService {
   }
 
   async logout(): Promise<void> {
-    try {
-      await this.afAuth.signOut();
-      localStorage.removeItem(this.adminTokenKey);
-      localStorage.removeItem(this.userTokenKey);
-      localStorage.removeItem(this.resetEmailKey);
-      this.router.navigate(['/login']);
-    } catch (error) {
-      console.error('Logout error:', error);
-      throw error;
-    }
+  try {
+    await this.cleanUpSession(); 
+    this.router.navigate(['/login']);
+  } catch (error) {
+    console.error('Logout error:', error);
+    throw error;
   }
+}
 
   getCurrentUser(): Observable<firebase.User | null> {
     return this.afAuth.authState;
