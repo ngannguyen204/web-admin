@@ -2,14 +2,14 @@
   <h2>Account Management</h2>
 
   <div class="toggle-container">
-    <button [class.active]="isAdminView" (click)="toggleView()">👤 Admin Accounts</button>
-    <button [class.active]="!isAdminView" (click)="toggleView()">👥 Customer Accounts</button>
+    <button [class.active]="isAdminView" (click)="toggleView()"> Admin Accounts</button>
+    <button [class.active]="!isAdminView" (click)="toggleView()">Customer Accounts</button>
   </div>
 
   <div class="header-container">
-    <button class="add-button" *ngIf="isAdminView" (click)="goToAddAccountPage()">➕ Add Admin</button>
+    <button class="add-button" *ngIf="isAdminView" (click)="goToAddAccountPage()">Add Admin</button>
     <div class="search-bar">
-      <input type="text" [(ngModel)]="searchText" placeholder="🔍 Search..." />
+      <input type="text" [(ngModel)]="searchText" placeholder=" Search..." />
     </div>
   </div>
 

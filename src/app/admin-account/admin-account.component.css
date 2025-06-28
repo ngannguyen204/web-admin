@@ -24,7 +24,7 @@
 }
 
 .toggle-container button.active {
-  background-color: #063B06;
+  background-color: #1B4D3E;
   color: white;
   border: 1px solid transparent;
 }
@@ -37,38 +37,37 @@
 }
 
 .add-button {
-  background-color: #063B06;
-  color: white;
-  padding: 10px 24px;
-  border-radius: 24px;
-  font-size: 15px;
+  background-color: #1B4D3E;
+  color: #fff;
+  padding: 8px 20px;
+  border-radius: 8px;
   font-weight: 600;
+  font-size: 14px;
   border: none;
   cursor: pointer;
-  transition: 0.3s ease;
 }
 
 .add-button:hover {
-  background-color: #045a04;
+  background-color: #153D31;
 }
 
 .search-bar {
   display: flex;
   align-items: center;
-  background: #ffffff;
+  background: #fff;
   border: 1px solid #ddd;
-  border-radius: 24px;
-  padding: 6px 16px;
+  border-radius: 8px;
+  padding: 4px 12px;
 }
 
 .search-bar input {
   border: none;
   outline: none;
   font-size: 14px;
-  padding: 6px;
-  width: 220px;
-  background: transparent;
+  padding: 4px;
+  width: 200px;
 }
+
 
 table {
   width: 100%;

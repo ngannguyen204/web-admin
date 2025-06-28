@@ -21,44 +21,36 @@
 
 /* BUTTON THÊM KHUYẾN MÃI */
 .add-button {
-    background-color: #2d4b21; /* Xanh lá đậm */
-    color: white;
-    padding: 10px 20px;
-    border-radius: 20px;
-    border: none;
-    font-size: 16px;
-    cursor: pointer;
-    font-weight: bold;
-    transition: background 0.3s ease-in-out;
-    height: 40px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-grow: 0.5; /* Cùng kích thước với ô tìm kiếm */
+  background-color: #1B4D3E;
+  color: #fff;
+  padding: 8px 20px;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 14px;
+  border: none;
+  cursor: pointer;
 }
 
 .add-button:hover {
-    background-color: #213819;
+  background-color: #153D31;
 }
 
 /* THANH TÌM KIẾM */
 .search-bar {
-    display: flex;
-    align-items: center;
-    background: white;
-    border: 1px solid #ddd;
-    border-radius: 20px;
-    padding: 5px 10px;
-    flex-grow: 0.5; /* Cùng kích thước với nút Thêm */
+  display: flex;
+  align-items: center;
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 4px 12px;
 }
 
-/* Ô INPUT BÊN TRONG */
 .search-bar input {
-    border: none;
-    outline: none;
-    font-size: 14px;
-    padding: 5px;
-    width: 100%;
+  border: none;
+  outline: none;
+  font-size: 14px;
+  padding: 4px;
+  width: 200px;
 }
 
 /* BẢNG HIỂN THỊ KHUYẾN MÃI */

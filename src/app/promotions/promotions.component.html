@@ -2,13 +2,13 @@
   <h2>Promotion Management</h2>
 
   <div class="header-container">
-    <button class="add-button" (click)="showAddPromotionForm()">➕ Add Promotion</button>
+    <button class="add-button" (click)="showAddPromotionForm()">Add Promotion</button>
     <div class="search-bar">
       <input
         type="text"
         [(ngModel)]="searchText"
         (input)="searchPromotions()"
-        placeholder="🔍 Search promotions..."
+        placeholder="Search promotions..."
       />
     </div>
   </div>

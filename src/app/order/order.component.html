@@ -21,7 +21,7 @@
 
   <!-- Popup chọn trạng thái -->
   <div class="filter-popup" *ngIf="showFilterPopup">
-    <h3>Chọn tình trạng đơn hàng</h3>
+    <h3>Choose order status</h3>
     <div class="status-options">
       <button 
         *ngFor="let status of allStatuses" 
@@ -30,8 +30,8 @@
         {{ status }}
       </button>
     </div>
-    <p>*Có thể chọn nhiều trạng thái</p>
-    <button class="apply-button" (click)="applyFilter()">Áp dụng</button>
+    <p>*Can choose many types of status</p>
+    <button class="apply-button" (click)="applyFilter()">Apply</button>
   </div>
 
   <!-- Bảng danh sách đơn hàng -->
@@ -73,7 +73,7 @@
   <!-- Phân trang -->
   <div class="pagination">
     <button (click)="changePage(currentPage - 1)" [disabled]="currentPage === 1">❮</button>
-    <span>Trang {{ currentPage }} / {{ totalPages }}</span>
+    <span>Page {{ currentPage }} / {{ totalPages }}</span>
     <button (click)="changePage(currentPage + 1)" [disabled]="currentPage === totalPages">❯</button>
   </div>
 </div>
